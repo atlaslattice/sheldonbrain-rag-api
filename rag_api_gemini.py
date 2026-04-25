@@ -216,7 +216,7 @@ def root():
             "POST /store": "Store new insight",
             "POST /delete": "Delete insight by ID"
         },
-        "documentation": "https://github.com/splitmerge420/sheldonbrain-rag-api"
+        "documentation": "https://github.com/atlaslattice/sheldonbrain-rag-api"
     })
 
 

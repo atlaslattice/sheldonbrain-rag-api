@@ -4,7 +4,7 @@
 
 **Date:** January 1, 2026  
 **Status:** ✅ Production Ready  
-**GitHub:** https://github.com/splitmerge420/sheldonbrain-rag-api
+**GitHub:** https://github.com/atlaslattice/sheldonbrain-rag-api
 
 ---
 
@@ -170,7 +170,7 @@ Response:
 
 ```bash
 # 1. Clone repository (if not already done)
-git clone https://github.com/splitmerge420/sheldonbrain-rag-api.git
+git clone https://github.com/atlaslattice/sheldonbrain-rag-api.git
 cd sheldonbrain-rag-api
 
 # 2. Get your Google Cloud Project ID
@@ -456,7 +456,7 @@ curl -X POST $RAG_URL/store \
 ## Resources
 
 **GitHub Repository:**  
-https://github.com/splitmerge420/sheldonbrain-rag-api
+https://github.com/atlaslattice/sheldonbrain-rag-api
 
 **Documentation:**
 - `CHROMEBOOK_TERMINAL_GUIDE.md` - Complete integration guide
@@ -469,7 +469,7 @@ https://github.com/splitmerge420/sheldonbrain-rag-api
 - Pinecone: https://docs.pinecone.io/
 
 **Support:**
-- GitHub Issues: https://github.com/splitmerge420/sheldonbrain-rag-api/issues
+- GitHub Issues: https://github.com/atlaslattice/sheldonbrain-rag-api/issues
 
 ---
 

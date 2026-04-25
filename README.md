@@ -70,7 +70,7 @@ This system solves **AI context amnesia** by providing a shared, persistent memo
 
 ```bash
 # Clone repository
-git clone https://github.com/splitmerge420/sheldonbrain-rag-api.git
+git clone https://github.com/atlaslattice/sheldonbrain-rag-api.git
 cd sheldonbrain-rag-api
 
 # Create virtual environment
@@ -431,7 +431,7 @@ This is an open-source project. Contributions welcome!
 
 ## 📞 Support
 
-- **GitHub:** https://github.com/splitmerge420/sheldonbrain-rag-api
+- **GitHub:** https://github.com/atlaslattice/sheldonbrain-rag-api
 - **Issues:** Report bugs or request features via GitHub Issues
 - **Documentation:** All docs in the repository
 
