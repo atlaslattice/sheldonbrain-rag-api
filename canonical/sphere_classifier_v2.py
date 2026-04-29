@@ -283,11 +283,20 @@ def pinecone_metadata(text: str, source: str = "manus",
 
 def migrate_pinecone_vectors(index, namespace: str = "baseline",
                              batch_size: int = 100, dry_run: bool = True):
-    """Reclassify existing Pinecone vectors from old ontology to 12×12+1.
+    """DEPRECATED — Do not call in production.
 
-    This is a one-time migration script. It reads all vectors from the
-    specified namespace, reclassifies them using the new ontology, and
-    updates their metadata.
+    This is a REFERENCE IMPLEMENTATION only. Known issues:
+      - Dummy query vector (768-dim zeros) may not match your actual index dimension
+      - Pinecone query() is not a general scan/list primitive
+      - No rate limiting, resumability, or error recovery
+
+    For actual backfill, use the dedicated script:
+        scripts/pinecone_backfill.py
+    which supports: correct index dimension, ID iteration via source-of-truth,
+    rate limiting, dry-run mode, and resumability.
+
+    Original purpose: Reclassify existing Pinecone vectors from old ontology
+    to 12x12+1. Kept here as vendored reference for the classification logic.
 
     Args:
         index: Pinecone Index object
@@ -298,6 +307,13 @@ def migrate_pinecone_vectors(index, namespace: str = "baseline",
     Returns:
         Dict with migration statistics
     """
+    import warnings
+    warnings.warn(
+        "migrate_pinecone_vectors() is deprecated and unsafe for production. "
+        "Use scripts/pinecone_backfill.py instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     classifier = KeywordClassifier()
     stats = {"total": 0, "reclassified": 0, "unchanged": 0, "errors": 0}
 
