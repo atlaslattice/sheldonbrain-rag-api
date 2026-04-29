@@ -1,0 +1,59 @@
+name: Ontology Lock Gate — Warn Mode
+
+on:
+  pull_request:
+    branches: [master, main]
+    paths:
+      - 'canonical/**'
+  push:
+    branches: [master, main]
+    paths:
+      - 'canonical/**'
+
+jobs:
+  ontology-lock-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify canonical file integrity
+        run: |
+          echo "=== Ontology Lock Gate — Warn Mode ==="
+          FAIL=0
+
+          for f in canonical/lattice_ontology_v2.py canonical/sphere_classifier_v2.py canonical/lattice_ontology.yaml; do
+            if [ -f "$f" ]; then
+              HASH=$(sha256sum "$f" | cut -d' ' -f1)
+              echo "$f: $HASH"
+            else
+              echo "::warning::MISSING: $f"
+              FAIL=1
+            fi
+          done
+
+          if [ ! -f "canonical/VENDORED_FROM.md" ]; then
+            echo "::warning::canonical/VENDORED_FROM.md is missing"
+            FAIL=1
+          else
+            echo "VENDORED_FROM.md present"
+          fi
+
+          if [ "$FAIL" -ne 0 ]; then
+            echo "ONTOLOGY LOCK GATE: WARNINGS DETECTED — not blocking yet"
+          else
+            echo "ONTOLOGY LOCK GATE: PASSED"
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies and run ontology migration tests
+        run: |
+          pip install numpy pytest
+          if [ -f "tests/test_ontology_migration.py" ]; then
+            python -m pytest tests/test_ontology_migration.py -v || echo "::warning::Ontology migration tests failed in warn mode."
+          else
+            echo "::warning::tests/test_ontology_migration.py not found; migration test skipped."
+          fi
