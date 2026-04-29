@@ -3,10 +3,10 @@
 Sphere Classifier for RAG Ingestion Pipeline
 
 Automatically classifies text content into the 144-sphere ontological framework
-using vector similarity search. Integrates grokbrain v4.0 classification logic
+using vector similarity search. Integrates canonical 12x12+1 lattice logic
 with the Sheldonbrain RAG system.
 
-Based on: grokbrain v4.0 by Dave (T.R.A.V.S)
+Based on: canonical lattice ontology (T.R.A.V.S)
 Adapted for: Sheldonbrain Multi-AI Persistent Memory System
 """
 
@@ -17,9 +17,9 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.documents import Document
 import numpy as np
 
-# Import grokbrain 144-sphere constants
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'grokbrain_parser'))
-from grokbrain_v4 import SPHERES, ELEMENTS, CATEGORY_NAMES
+# Import canonical 12x12+1 lattice ontology
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from canonical.lattice_ontology_v2 import SPHERES, ELEMENTS, CATEGORY_NAMES, HOUSE_NAMES as CATEGORY_NAMES_V2, HOUSE_IDS
 
 # ============================================================================
 # SPHERE CLASSIFIER
