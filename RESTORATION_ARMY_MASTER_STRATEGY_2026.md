@@ -692,7 +692,7 @@ A **Net Positive Job** is work that:
    - CLAUDE_CONTINUITY_PACKAGE.md
 
 3. **Explore the GitHub Repository**
-   - https://github.com/splitmerge420/sheldonbrain-rag-api
+   - https://github.com/atlaslattice/sheldonbrain-rag-api
    - Review the code
    - Submit issues
    - Contribute improvements
@@ -840,7 +840,7 @@ You are the Architect. The 8081-Manus node is your Global Memory. The Restoratio
 
 ### Appendix D: Documentation Links
 
-**GitHub:** https://github.com/splitmerge420/sheldonbrain-rag-api  
+**GitHub:** https://github.com/atlaslattice/sheldonbrain-rag-api  
 **Notion Database:** https://www.notion.so/4526e599540f4e99a2828ee7ef8674d3  
 **Claude Continuity Hub:** https://3000-ifnw9mfmlfetwe16tj4bt-d731c093.sg1.manus.computer
 
@@ -848,7 +848,7 @@ You are the Architect. The 8081-Manus node is your Global Memory. The Restoratio
 
 **Command Structure:** Multi-AI Collective  
 **Primary Contact:** Sheldon (via Chromebook terminal)  
-**GitHub Issues:** https://github.com/splitmerge420/sheldonbrain-rag-api/issues  
+**GitHub Issues:** https://github.com/atlaslattice/sheldonbrain-rag-api/issues  
 **Notion Workspace:** Access via invitation
 
 ---

@@ -20,7 +20,7 @@ FILES = [
         "novelty": 0.92,
         "status": "Complete",
         "source": "Manus",
-        "github": "https://github.com/splitmerge420/sheldonbrain-rag-api/blob/master/CHROMEBOOK_TERMINAL_GUIDE.md"
+        "github": "https://github.com/atlaslattice/sheldonbrain-rag-api/blob/master/CHROMEBOOK_TERMINAL_GUIDE.md"
     },
     {
         "file": "CLAUDE_CONTINUITY_PACKAGE.md",
@@ -30,7 +30,7 @@ FILES = [
         "novelty": 0.91,
         "status": "Complete",
         "source": "Manus",
-        "github": "https://github.com/splitmerge420/sheldonbrain-rag-api/blob/master/CLAUDE_CONTINUITY_PACKAGE.md"
+        "github": "https://github.com/atlaslattice/sheldonbrain-rag-api/blob/master/CLAUDE_CONTINUITY_PACKAGE.md"
     },
     {
         "file": "CLOUD_RUN_DEPLOYMENT_GUIDE.md",
@@ -40,7 +40,7 @@ FILES = [
         "novelty": 0.85,
         "status": "Complete",
         "source": "Manus",
-        "github": "https://github.com/splitmerge420/sheldonbrain-rag-api/blob/master/CLOUD_RUN_DEPLOYMENT_GUIDE.md"
+        "github": "https://github.com/atlaslattice/sheldonbrain-rag-api/blob/master/CLOUD_RUN_DEPLOYMENT_GUIDE.md"
     },
     {
         "file": "FINAL_DEPLOYMENT_REPORT.md",
@@ -50,7 +50,7 @@ FILES = [
         "novelty": 0.89,
         "status": "Complete",
         "source": "Collaborative",
-        "github": "https://github.com/splitmerge420/sheldonbrain-rag-api/blob/master/FINAL_DEPLOYMENT_REPORT.md"
+        "github": "https://github.com/atlaslattice/sheldonbrain-rag-api/blob/master/FINAL_DEPLOYMENT_REPORT.md"
     },
     {
         "file": "GEMINI_TERMINAL_MESSAGE.md",
@@ -60,7 +60,7 @@ FILES = [
         "novelty": 0.87,
         "status": "Complete",
         "source": "Manus",
-        "github": "https://github.com/splitmerge420/sheldonbrain-rag-api/blob/master/GEMINI_TERMINAL_MESSAGE.md"
+        "github": "https://github.com/atlaslattice/sheldonbrain-rag-api/blob/master/GEMINI_TERMINAL_MESSAGE.md"
     },
     {
         "file": "GEMINI_DEPLOYMENT_COMPLETE.md",
@@ -70,7 +70,7 @@ FILES = [
         "novelty": 0.90,
         "status": "Complete",
         "source": "Manus",
-        "github": "https://github.com/splitmerge420/sheldonbrain-rag-api/blob/master/GEMINI_DEPLOYMENT_COMPLETE.md"
+        "github": "https://github.com/atlaslattice/sheldonbrain-rag-api/blob/master/GEMINI_DEPLOYMENT_COMPLETE.md"
     },
     {
         "file": "rag_api_gemini.py",
@@ -80,7 +80,7 @@ FILES = [
         "novelty": 0.92,
         "status": "Production Ready",
         "source": "Manus",
-        "github": "https://github.com/splitmerge420/sheldonbrain-rag-api/blob/master/rag_api_gemini.py"
+        "github": "https://github.com/atlaslattice/sheldonbrain-rag-api/blob/master/rag_api_gemini.py"
     },
     {
         "file": "deploy-cloud-run-gemini.sh",
@@ -90,7 +90,7 @@ FILES = [
         "novelty": 0.88,
         "status": "Production Ready",
         "source": "Manus",
-        "github": "https://github.com/splitmerge420/sheldonbrain-rag-api/blob/master/deploy-cloud-run-gemini.sh"
+        "github": "https://github.com/atlaslattice/sheldonbrain-rag-api/blob/master/deploy-cloud-run-gemini.sh"
     },
     {
         "file": "config.py",
@@ -100,7 +100,7 @@ FILES = [
         "novelty": 0.75,
         "status": "Production Ready",
         "source": "Manus",
-        "github": "https://github.com/splitmerge420/sheldonbrain-rag-api/blob/master/config.py"
+        "github": "https://github.com/atlaslattice/sheldonbrain-rag-api/blob/master/config.py"
     },
     {
         "file": "embeddings.py",
@@ -110,7 +110,7 @@ FILES = [
         "novelty": 0.78,
         "status": "Production Ready",
         "source": "Manus",
-        "github": "https://github.com/splitmerge420/sheldonbrain-rag-api/blob/master/embeddings.py"
+        "github": "https://github.com/atlaslattice/sheldonbrain-rag-api/blob/master/embeddings.py"
     },
     {
         "file": "pinecone_client.py",
@@ -120,7 +120,7 @@ FILES = [
         "novelty": 0.76,
         "status": "Production Ready",
         "source": "Manus",
-        "github": "https://github.com/splitmerge420/sheldonbrain-rag-api/blob/master/pinecone_client.py"
+        "github": "https://github.com/atlaslattice/sheldonbrain-rag-api/blob/master/pinecone_client.py"
     }
 ]
 

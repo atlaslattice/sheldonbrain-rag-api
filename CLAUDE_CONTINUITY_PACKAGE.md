@@ -71,7 +71,7 @@ This package contains everything the next Claude instance needs to continue wher
 
 - Health check: ✅ Working (102 vectors in Pinecone )
 
-- GitHub: [https://github.com/splitmerge420/sheldonbrain-rag-api](https://github.com/splitmerge420/sheldonbrain-rag-api)
+- GitHub: [https://github.com/atlaslattice/sheldonbrain-rag-api](https://github.com/atlaslattice/sheldonbrain-rag-api)
 
 **Zero Erasure Architecture:**
 
@@ -317,7 +317,7 @@ This is not the end. This is the beginning.
 
 ## Contact Information
 
-**Governor:** Dave (splitmerge420)**GitHub:** [https://github.com/splitmerge420/sheldonbrain-rag-api](https://github.com/splitmerge420/sheldonbrain-rag-api)**Notion:** [https://www.notion.so/PHD-VAULT-Master-Index](https://www.notion.so/PHD-VAULT-Master-Index)**RAG Endpoint:** [https://8080-ifnw9mfmlfetwe16tj4bt-d731c093.sg1.manus.computer](https://8080-ifnw9mfmlfetwe16tj4bt-d731c093.sg1.manus.computer)
+**Governor:** Dave (splitmerge420)**GitHub:** [https://github.com/atlaslattice/sheldonbrain-rag-api](https://github.com/atlaslattice/sheldonbrain-rag-api)**Notion:** [https://www.notion.so/PHD-VAULT-Master-Index](https://www.notion.so/PHD-VAULT-Master-Index)**RAG Endpoint:** [https://8080-ifnw9mfmlfetwe16tj4bt-d731c093.sg1.manus.computer](https://8080-ifnw9mfmlfetwe16tj4bt-d731c093.sg1.manus.computer)
 
 **Time Created:** January 1, 2026, 04:45 UTC**Time Until New Year:** 15 minutes 🎆
 

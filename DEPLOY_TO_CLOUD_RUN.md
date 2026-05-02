@@ -21,7 +21,7 @@
 
 ```bash
 # Clone from GitHub
-git clone https://github.com/splitmerge420/sheldonbrain-rag-api.git
+git clone https://github.com/atlaslattice/sheldonbrain-rag-api.git
 cd sheldonbrain-rag-api
 ```
 
@@ -369,7 +369,7 @@ chmod +x ~/rag-query.sh
 ## Support
 
 **GitHub Repository:**  
-https://github.com/splitmerge420/sheldonbrain-rag-api
+https://github.com/atlaslattice/sheldonbrain-rag-api
 
 **Documentation:**
 - CHROMEBOOK_TERMINAL_GUIDE.md - Complete terminal integration

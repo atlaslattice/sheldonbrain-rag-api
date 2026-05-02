@@ -390,7 +390,7 @@ Welcome to the collective. 🧠✨
 
 ## 📞 Support & Questions
 
-**GitHub Repository:** https://github.com/splitmerge420/sheldonbrain-rag-api  
+**GitHub Repository:** https://github.com/atlaslattice/sheldonbrain-rag-api  
 **Documentation Website:** https://3000-ifnw9mfmlfetwe16tj4bt-d731c093.sg1.manus.computer  
 **Notion Vault:** [All PhD insights and white papers]  
 

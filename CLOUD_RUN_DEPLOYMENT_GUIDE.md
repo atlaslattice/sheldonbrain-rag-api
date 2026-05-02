@@ -52,7 +52,7 @@
 1. Select "Continuously deploy from a repository"
 2. Click "Set up with Cloud Build"
 3. Connect GitHub account
-4. Select repository: `splitmerge420/sheldonbrain-rag-api`
+4. Select repository: `atlaslattice/sheldonbrain-rag-api`
 5. Branch: `main` or `master`
 6. Build type: Dockerfile
 7. Dockerfile path: `/Dockerfile`
@@ -190,7 +190,7 @@ images:
 ```bash
 gcloud builds triggers create github \
   --repo-name=sheldonbrain-rag-api \
-  --repo-owner=splitmerge420 \
+  --repo-owner=atlaslattice \
   --branch-pattern="^main$" \
   --build-config=cloudbuild.yaml
 ```

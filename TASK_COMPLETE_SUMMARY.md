@@ -74,7 +74,7 @@ Successfully completed the Gemini embeddings integration for the Multi-AI Persis
 
 ### 4. GitHub Repository Updated ✅
 
-**Repository:** https://github.com/splitmerge420/sheldonbrain-rag-api
+**Repository:** https://github.com/atlaslattice/sheldonbrain-rag-api
 
 **Commits:**
 - Gemini embeddings implementation

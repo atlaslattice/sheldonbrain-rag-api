@@ -63,7 +63,7 @@ gcloud config set project YOUR_PROJECT_ID
 
 ```bash
 # Clone from GitHub
-git clone https://github.com/splitmerge420/sheldonbrain-rag-api.git
+git clone https://github.com/atlaslattice/sheldonbrain-rag-api.git
 cd sheldonbrain-rag-api
 ```
 
@@ -543,7 +543,7 @@ Store insights asynchronously to avoid blocking:
 ## Resources
 
 **GitHub Repository:**  
-https://github.com/splitmerge420/sheldonbrain-rag-api
+https://github.com/atlaslattice/sheldonbrain-rag-api
 
 **Cloud Run Documentation:**  
 https://cloud.google.com/run/docs

@@ -183,7 +183,7 @@ The OpenAI API key is returning 404 errors, preventing store/query operations. T
 
 ## GitHub Repository
 
-**URL:** https://github.com/splitmerge420/sheldonbrain-rag-api
+**URL:** https://github.com/atlaslattice/sheldonbrain-rag-api
 
 **Contents:**
 - ✅ Production Flask API (`rag_api.py`)
@@ -543,7 +543,7 @@ Tonight proved that principle at scale. Three AI instances, working autonomously
 ## Contact & Resources
 
 **GitHub Repository:**  
-https://github.com/splitmerge420/sheldonbrain-rag-api
+https://github.com/atlaslattice/sheldonbrain-rag-api
 
 **Live RAG API:**  
 https://8080-ifnw9mfmlfetwe16tj4bt-d731c093.sg1.manus.computer

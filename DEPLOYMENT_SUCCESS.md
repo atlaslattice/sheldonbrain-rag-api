@@ -173,7 +173,7 @@ curl -X POST https://8081-ifnw9mfmlfetwe16tj4bt-d731c093.sg1.manus.computer/quer
 **Quick Deploy:**
 ```bash
 # On your Chromebook
-git clone https://github.com/splitmerge420/sheldonbrain-rag-api.git
+git clone https://github.com/atlaslattice/sheldonbrain-rag-api.git
 cd sheldonbrain-rag-api
 ./deploy-cloud-run-gemini.sh YOUR_PROJECT_ID
 ```
@@ -197,7 +197,7 @@ source ~/.bashrc
 ```bash
 # Download helper script
 curl -o ~/rag-query.sh \
-  https://raw.githubusercontent.com/splitmerge420/sheldonbrain-rag-api/master/scripts/rag-query.sh
+  https://raw.githubusercontent.com/atlaslattice/sheldonbrain-rag-api/master/scripts/rag-query.sh
 
 chmod +x ~/rag-query.sh
 ```
@@ -458,7 +458,7 @@ https://8081-ifnw9mfmlfetwe16tj4bt-d731c093.sg1.manus.computer
 - `GEMINI_DEPLOYMENT_COMPLETE.md` - Deployment summary
 
 **GitHub:**  
-https://github.com/splitmerge420/sheldonbrain-rag-api
+https://github.com/atlaslattice/sheldonbrain-rag-api
 
 **Notion Database:**  
 https://www.notion.so/4526e599540f4e99a2828ee7ef8674d3
