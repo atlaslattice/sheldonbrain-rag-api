@@ -1,0 +1,472 @@
+openapi: 3.1.0
+info:
+  title: Sheldonbrain Governed Memory API
+  version: 2.1.0
+  description: >-
+    Multi-agent persistent memory API with lattice ontology, lifecycle
+    governance, provenance defaults, retrieval receipts, and the invariant
+    that memory is context, not permission.
+  contact:
+    name: Atlas Lattice
+servers:
+  - url: http://localhost:8080
+    description: Local development
+x-product-invariant: memory != permission
+paths:
+  /health:
+    get:
+      summary: Health check
+      operationId: getHealth
+      responses:
+        "200":
+          description: Service health and configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+  /query:
+    post:
+      summary: Query memory with retrieval receipt
+      operationId: queryMemory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QueryRequest"
+      responses:
+        "200":
+          description: Query results with retrieval receipt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueryResponse"
+        "400":
+          description: Invalid query request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /store:
+    post:
+      summary: Store memory with provenance and governance defaults
+      operationId: storeMemory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreRequest"
+      responses:
+        "200":
+          description: Stored memory receipt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoreResponse"
+        "400":
+          description: Invalid store request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /lifecycle:
+    post:
+      summary: Apply non-destructive lifecycle transition
+      operationId: updateMemoryLifecycle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LifecycleRequest"
+      responses:
+        "200":
+          description: Lifecycle transition receipt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LifecycleResponse"
+        "400":
+          description: Invalid lifecycle request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /delete:
+    post:
+      summary: Deprecated delete endpoint
+      description: >-
+        Deprecated. Archives by default unless ALLOW_HARD_DELETE=true is set.
+        Product flows should use /lifecycle instead.
+      operationId: deprecatedDeleteMemory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [id]
+              properties:
+                id:
+                  type: string
+                reason:
+                  type: string
+                  default: Deprecated /delete endpoint called
+      responses:
+        "200":
+          description: Archive or hard-delete receipt
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "400":
+          description: Invalid delete request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /classify:
+    post:
+      summary: Classify text into lattice spheres without storing
+      operationId: classifyText
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [text]
+              properties:
+                text:
+                  type: string
+                  minLength: 1
+                top_k:
+                  type: integer
+                  minimum: 1
+                  maximum: 20
+                  default: 5
+                with_context:
+                  type: boolean
+                  default: false
+      responses:
+        "200":
+          description: Classification result
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "400":
+          description: Invalid classify request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /lattice:
+    get:
+      summary: Inspect lattice ontology
+      operationId: getLattice
+      responses:
+        "200":
+          description: Lattice ontology
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+components:
+  schemas:
+    LifecycleState:
+      type: string
+      enum:
+        - active
+        - archived
+        - quarantined
+        - superseded
+        - redacted_pointer
+    LifecycleOperation:
+      type: string
+      enum:
+        - archive
+        - quarantine
+        - supersede
+        - redact_pointer
+        - restore
+    RatificationState:
+      type: string
+      enum:
+        - unratified
+        - reviewed
+        - corrected
+        - rejected
+        - canonical
+    HealthResponse:
+      type: object
+      additionalProperties: true
+      required:
+        - status
+        - service
+        - version
+        - ontology_version
+        - namespace
+        - allow_hard_delete
+        - core_invariant
+      properties:
+        status:
+          type: string
+        service:
+          type: string
+        version:
+          type: string
+        embedding_model:
+          type: string
+        ontology_version:
+          type: string
+        ontology_source_commit:
+          type: string
+        vector_count:
+          type: integer
+        index:
+          type: string
+        namespace:
+          type: string
+        allow_hard_delete:
+          type: boolean
+        lifecycle_operations:
+          type: array
+          items:
+            $ref: "#/components/schemas/LifecycleOperation"
+        core_invariant:
+          type: string
+    QueryRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - query
+      properties:
+        query:
+          type: string
+          minLength: 1
+        top_k:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 5
+        filter:
+          type:
+            - object
+            - "null"
+          additionalProperties: true
+        include_archived:
+          type: boolean
+          default: false
+    QueryResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - memories
+        - retrieval_receipt
+        - count
+        - core_invariant
+      properties:
+        memories:
+          type: array
+          items:
+            $ref: "#/components/schemas/MemoryResult"
+        retrieval_receipt:
+          $ref: "#/components/schemas/RetrievalReceipt"
+        query_time_ms:
+          type: number
+        count:
+          type: integer
+        hidden_by_lifecycle:
+          type: integer
+        core_invariant:
+          type: string
+    StoreRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          minLength: 1
+        metadata:
+          type: object
+          additionalProperties: true
+          default: {}
+    StoreResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - status
+        - lifecycle
+        - ratification
+        - execution_authority
+        - content_hash
+        - core_invariant
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [stored]
+        lifecycle:
+          $ref: "#/components/schemas/LifecycleState"
+        ratification:
+          $ref: "#/components/schemas/RatificationState"
+        execution_authority:
+          type: boolean
+          const: false
+        content_hash:
+          type: string
+          pattern: "^sha256:[a-f0-9]{64}$"
+        vector_count:
+          type: integer
+        core_invariant:
+          type: string
+    LifecycleRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - operation
+      properties:
+        id:
+          type: string
+        operation:
+          $ref: "#/components/schemas/LifecycleOperation"
+        reason:
+          type: string
+          default: ""
+    LifecycleResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - status
+        - operation
+        - lifecycle
+        - hard_deleted
+        - timestamp
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [lifecycle_updated]
+        operation:
+          $ref: "#/components/schemas/LifecycleOperation"
+        lifecycle:
+          $ref: "#/components/schemas/LifecycleState"
+        hard_deleted:
+          type: boolean
+          const: false
+        timestamp:
+          type: string
+    MemoryResult:
+      type: object
+      additionalProperties: true
+      required:
+        - id
+        - score
+        - text
+        - lifecycle
+        - ratification
+        - execution_authority
+        - provenance
+        - warnings
+      properties:
+        id:
+          type: string
+        score:
+          type: number
+        text:
+          type: string
+        house:
+          type: string
+        sphere:
+          type: string
+        house_name:
+          type: string
+        sphere_name:
+          type: string
+        lifecycle:
+          $ref: "#/components/schemas/LifecycleState"
+        ratification:
+          $ref: "#/components/schemas/RatificationState"
+        execution_authority:
+          type: boolean
+        provenance:
+          $ref: "#/components/schemas/Provenance"
+        warnings:
+          type: array
+          items:
+            type: string
+    Provenance:
+      type: object
+      additionalProperties: false
+      properties:
+        created_at:
+          type: string
+        created_by_agent:
+          type: string
+        created_by_model:
+          type: string
+        source_type:
+          type: string
+        source_uri:
+          type: string
+        content_hash:
+          type: string
+          pattern: "^sha256:[a-f0-9]{64}$"
+    RetrievalReceipt:
+      type: object
+      additionalProperties: false
+      required:
+        - timestamp
+        - query_hash
+        - index
+        - namespace
+        - filters
+        - top_k
+        - include_archived
+        - ontology_version
+        - query_time_ms
+      properties:
+        timestamp:
+          type: string
+        query_hash:
+          type: string
+          pattern: "^sha256:[a-f0-9]{64}$"
+        index:
+          type: string
+        namespace:
+          type: string
+        filters:
+          type: object
+          additionalProperties: true
+        top_k:
+          type: integer
+        include_archived:
+          type: boolean
+        ontology_version:
+          type: string
+        ontology_source_commit:
+          type: string
+        query_time_ms:
+          type: number
+    ErrorResponse:
+      type: object
+      additionalProperties: true
+      required:
+        - error
+      properties:
+        error:
+          type: string
