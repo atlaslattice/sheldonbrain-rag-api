@@ -1,7 +1,7 @@
 # 🧠 Multi-AI Persistent Memory System (Sheldonbrain RAG API)
 
-**Version:** 2.0 (Gemini Embeddings)  
-**Status:** ✅ Production Ready  
+**Version:** 2.1 (Gemini Embeddings + Governed Memory)  
+**Status:** ✅ Production Ready / Product Spine Active  
 **Backup:** 100% Complete (105/105 vectors)
 
 A production-ready RAG (Retrieval-Augmented Generation) API powered by Google Gemini embeddings and Pinecone vector database, enabling persistent memory across multiple AI instances.
@@ -14,6 +14,8 @@ Sheldonbrain is more than a vector-search wrapper. It is being shaped into a tru
 
 Read the product spine: [`docs/OPENAI_PRODUCT_SPINE.md`](docs/OPENAI_PRODUCT_SPINE.md)
 
+OpenAI-style agent contract: [`docs/OPENAI_AGENT_TOOL_CONTRACT.md`](docs/OPENAI_AGENT_TOOL_CONTRACT.md)
+
 Core product invariant:
 
 ```text
@@ -22,11 +24,17 @@ Nothing becomes canon without provenance.
 Nothing executes merely because it was remembered.
 ```
 
+Operational boundary:
+
+```text
+memory != permission
+```
+
 ---
 
 ## 🎯 Overview
 
-This system solves **AI context amnesia** by providing a shared, persistent memory substrate that multiple AI agents (Claude, Gemini, GPT, Grok, etc.) can query and update. Every insight stored is never erased - implementing the **Zero Erasure** principle.
+This system solves **AI context amnesia** by providing a shared, persistent memory substrate that multiple AI agents (Claude, Gemini, GPT, Grok, etc.) can query and update. Every insight stored is preserved through governed lifecycle states rather than silently erased.
 
 ### Key Features
 
@@ -36,6 +44,9 @@ This system solves **AI context amnesia** by providing a shared, persistent memo
 - ✅ **Dual redundancy** (Pinecone + Notion backup)
 - ✅ **Docker deployment** ready
 - ✅ **Google Cloud Run** compatible
+- ✅ **Lifecycle governance** (`archive`, `quarantine`, `supersede`, `redact_pointer`, `restore`)
+- ✅ **Retrieval receipts** for query provenance
+- ✅ **OpenAI-style tool contract** for schema-first agent integration
 
 ---
 
@@ -212,5 +223,29 @@ Store new insight in the memory substrate.
   "id": "vec_xyz789",
   "status": "stored",
   "vector_count": 106
+}
+```
+
+### `POST /lifecycle`
+
+Apply a non-destructive lifecycle transition instead of hard deletion.
+
+**Request:**
+```json
+{
+  "id": "vec_xyz789",
+  "operation": "archive",
+  "reason": "Superseded by a corrected memory"
+}
+```
+
+**Response:**
+```json
+{
+  "id": "vec_xyz789",
+  "status": "lifecycle_updated",
+  "operation": "archive",
+  "lifecycle": "archived",
+  "hard_deleted": false
 }
 ```
