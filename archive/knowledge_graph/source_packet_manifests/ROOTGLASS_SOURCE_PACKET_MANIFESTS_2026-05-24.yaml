@@ -1,0 +1,117 @@
+# Rootglass Source Packet Manifest Index
+# Date: 2026-05-24
+# Status: intake index, not canon
+
+manifest_version: "0.1"
+created_at: "2026-05-24"
+status: "intake_not_canon"
+owner_lane: "Rootglass"
+product_invariant: "memory != permission"
+
+manifest_doctrine:
+  - "A source packet is not canon."
+  - "A source packet is not a decision."
+  - "Claims stay candidates until reviewed."
+  - "Human-root decides what graduates."
+
+packet_manifest_schema:
+  packet_id: "Stable packet ID"
+  packet_title: "Human-readable packet title"
+  source_family: "Copilot | Gemini | GangaSeek | Claude"
+  source_inventory_ids: []
+  required_source_receipts: []
+  required_review_lanes: []
+  extraction_status: "not_ready | ready_for_extraction | extracted"
+  promotion_status: "not_allowed | candidate | approved"
+  notes: "Freeform notes"
+
+manifests:
+  - packet_id: "ROOTGLASS-PACKET-COPILOT-2026-05-24"
+    packet_title: "Copilot Source Packet"
+    source_family: "Copilot"
+    source_inventory_ids:
+      - "KG-SRC-0004"
+      - "KG-SRC-0005"
+      - "KG-SRC-0007"
+    required_source_receipts:
+      - "Drive file ID or GitHub path"
+      - "SHA-256 for raw or semi-raw exports"
+      - "GitHub mirror path where available"
+      - "Source manifest"
+    required_review_lanes:
+      - "Rootglass"
+      - "Lucerna"
+      - "Hashlight"
+      - "TIDELOCK"
+    extraction_status: "not_ready"
+    promotion_status: "not_allowed"
+    notes: "Separate transcript, summary, synthesis, and wrapper artifacts before extraction."
+
+  - packet_id: "ROOTGLASS-PACKET-GEMINI-2026-05-24"
+    packet_title: "Gemini Council Input Source Packet"
+    source_family: "Gemini"
+    source_inventory_ids:
+      - "KG-SRC-0006"
+    required_source_receipts:
+      - "Drive file list"
+      - "SHA-256 manifest"
+      - "GitHub mirror path where available"
+      - "Source lineage map"
+    required_review_lanes:
+      - "Rootglass"
+      - "Lucerna"
+      - "Hashlight"
+    extraction_status: "not_ready"
+    promotion_status: "not_allowed"
+    notes: "Council material is review input until file-level receipts are attached."
+
+  - packet_id: "ROOTGLASS-PACKET-GANGASEEK-2026-05-24"
+    packet_title: "GangaSeek Source Packet"
+    source_family: "GangaSeek"
+    source_inventory_ids:
+      - "KG-SRC-0001"
+      - "KG-SRC-0002"
+      - "KG-SRC-0003"
+      - "KG-SRC-0008"
+    required_source_receipts:
+      - "Drive file IDs"
+      - "SHA-256 manifest"
+      - "PDF page anchor manifest where applicable"
+      - "GitHub mirror paths"
+      - "Decision receipt where applicable"
+    required_review_lanes:
+      - "Rootglass"
+      - "Lucerna"
+      - "Hashlight"
+      - "Sable Vesper"
+    extraction_status: "not_ready"
+    promotion_status: "not_allowed"
+    notes: "First priority packet once hashes, mirrors, and page anchors are resolved."
+
+  - packet_id: "ROOTGLASS-PACKET-CLAUDE-2026-05-24"
+    packet_title: "Claude Source Packet"
+    source_family: "Claude"
+    source_inventory_ids:
+      - "CLAUDE-ADV-0001"
+      - "CLAUDE-ADV-0002"
+    required_source_receipts:
+      - "Raw export path"
+      - "SHA-256 manifest"
+      - "Source lineage map"
+      - "Review findings"
+      - "Human-root decision where applicable"
+    required_review_lanes:
+      - "Morpheus Grok"
+      - "Rootglass"
+      - "Lucerna"
+      - "Hashlight"
+      - "Sable Vesper"
+    extraction_status: "not_ready"
+    promotion_status: "not_allowed"
+    notes: "Route Claude material through counter-review before promotion."
+
+next_actions:
+  - "Resolve source IDs, file IDs, and repo paths."
+  - "Create SHA-256 manifests."
+  - "Mirror raw cargo into GitHub receipt paths where appropriate."
+  - "Create SourceArtifact nodes only after source lineage is explicit."
