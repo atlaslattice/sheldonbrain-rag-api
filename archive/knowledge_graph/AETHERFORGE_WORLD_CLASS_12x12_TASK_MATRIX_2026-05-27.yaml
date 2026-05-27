@@ -1,0 +1,245 @@
+# Aetherforge 12x12 World-Class Task Matrix
+# Date: 2026-05-27
+# Status: candidate_operation_not_canon
+# Canon: no
+# Deployment: no
+# Authority: none
+# Purpose: 144 concrete tasks to make the operation world-class without overclaiming.
+
+matrix_version: "0.1"
+status: candidate_operation_not_canon
+canon_status: not_canon
+deployment_status: not_deployment
+authority_status: none
+keeper: "The graph shows where review is needed. It does not decide what is true."
+execution_policy:
+  - "Execute as candidate work only."
+  - "Prefer receipts over synthesis."
+  - "Do not claim canon, deployment, or authority."
+  - "Preserve negative results."
+  - "Human-root ratifies promotions."
+
+lanes:
+  H01_Intake_Receipts:
+    lane_id: H01
+    theme: "Raw lineage, source roots, hashes, and receipt debt."
+    tasks:
+      - {task_id: H01.T01, title: "Backfill Drive file IDs into KG inventory rows.", status: proposed}
+      - {task_id: H01.T02, title: "Compute SHA-256 for every raw export and mirrored artifact.", status: proposed}
+      - {task_id: H01.T03, title: "Add raw_export_status to every source node.", status: proposed}
+      - {task_id: H01.T04, title: "Create missing_receipts index grouped by lane.", status: proposed}
+      - {task_id: H01.T05, title: "Separate raw transcript, semi-raw export, summary, and wrapper artifacts.", status: proposed}
+      - {task_id: H01.T06, title: "Build source_uri normalization rules for GitHub, Drive, Notion, Gamma, chat, and external URLs.", status: proposed}
+      - {task_id: H01.T07, title: "Create receipt manifest template for every ingestion batch.", status: proposed}
+      - {task_id: H01.T08, title: "Add duplicate detection by hash and title similarity.", status: proposed}
+      - {task_id: H01.T09, title: "Mark source artifacts with observed_at and inspected_by fields.", status: proposed}
+      - {task_id: H01.T10, title: "Create no_receipt quarantine state for unsupported claims.", status: proposed}
+      - {task_id: H01.T11, title: "Build human-readable receipt cards for review packets.", status: proposed}
+      - {task_id: H01.T12, title: "Preserve negative searches as first-class evidence nodes.", status: proposed}
+
+  H02_Schema_Graph_Core:
+    lane_id: H02
+    theme: "Graph substrate, node/edge discipline, and validation."
+    tasks:
+      - {task_id: H02.T01, title: "Finalize KG node type schema v0.1.", status: proposed}
+      - {task_id: H02.T02, title: "Finalize KG edge type schema v0.1.", status: proposed}
+      - {task_id: H02.T03, title: "Add artifact_status, canon_status, authority_status, deployment_status enums.", status: proposed}
+      - {task_id: H02.T04, title: "Define Claim packet structured output schema.", status: proposed}
+      - {task_id: H02.T05, title: "Define EvidenceAnchor packet structured output schema.", status: proposed}
+      - {task_id: H02.T06, title: "Define ReviewFinding packet structured output schema.", status: proposed}
+      - {task_id: H02.T07, title: "Define Decision packet schema with Human-root gate.", status: proposed}
+      - {task_id: H02.T08, title: "Create graph validation rules for required fields.", status: proposed}
+      - {task_id: H02.T09, title: "Add promotion blockers to CanonCandidate nodes.", status: proposed}
+      - {task_id: H02.T10, title: "Add contradiction and supersession edge validation.", status: proposed}
+      - {task_id: H02.T11, title: "Write example nodes and edges for Sheldonbrain first pass.", status: proposed}
+      - {task_id: H02.T12, title: "Create schema changelog with non-canon version history.", status: proposed}
+
+  H03_Sheldonbrain_Codebase:
+    lane_id: H03
+    theme: "Code paths, parser modules, adapters, and testable implementation patches."
+    tasks:
+      - {task_id: H03.T01, title: "Patch /store payload mismatch between batch_ingest.py and rag_api.py.", status: proposed}
+      - {task_id: H03.T02, title: "Create endpoint truth table for README/product spine vs actual API routes.", status: proposed}
+      - {task_id: H03.T03, title: "Add content_hash generation during ingestion.", status: proposed}
+      - {task_id: H03.T04, title: "Add source_uri and transform_chain fields during ingestion.", status: proposed}
+      - {task_id: H03.T05, title: "Add raw-vs-summary classifier before vector storage.", status: proposed}
+      - {task_id: H03.T06, title: "Add canon_status default none/unratified to every stored record.", status: proposed}
+      - {task_id: H03.T07, title: "Add execution_authority false to every retrieval envelope.", status: proposed}
+      - {task_id: H03.T08, title: "Add retrieval receipt object to /query responses.", status: proposed}
+      - {task_id: H03.T09, title: "Add lifecycle state field to store/query data model.", status: proposed}
+      - {task_id: H03.T10, title: "Add test for memory_is_not_permission invariant.", status: proposed}
+      - {task_id: H03.T11, title: "Add smoke test for local store/query/receipt loop.", status: proposed}
+      - {task_id: H03.T12, title: "Add safe redaction path for secrets and sensitive source fields.", status: proposed}
+
+  H04_Notion_Drive_Gamma_Connectors:
+    lane_id: H04
+    theme: "Connected source maps across Notion, Drive, Gamma, chat, and external sources."
+    tasks:
+      - {task_id: H04.T01, title: "Map Notion source roots into graph SourceArtifact nodes.", status: proposed}
+      - {task_id: H04.T02, title: "Fetch Notion database/data-source schemas for source inventories.", status: proposed}
+      - {task_id: H04.T03, title: "Create Notion object to edge extraction map.", status: proposed}
+      - {task_id: H04.T04, title: "Backfill Notion page IDs into KG inventory.", status: proposed}
+      - {task_id: H04.T05, title: "Backfill Drive IDs for GangaSeek, Copilot, Gemini, ORCS, and council packets.", status: proposed}
+      - {task_id: H04.T06, title: "Create Drive raw cargo manifest.", status: proposed}
+      - {task_id: H04.T07, title: "Create Gamma artifact registry for decks/docs used in the operation.", status: proposed}
+      - {task_id: H04.T08, title: "Define connector freshness and stale-source rules.", status: proposed}
+      - {task_id: H04.T09, title: "Create mirror status report Drive to GitHub.", status: proposed}
+      - {task_id: H04.T10, title: "Identify Drive artifacts not mirrored to GitHub.", status: proposed}
+      - {task_id: H04.T11, title: "Identify Notion legacy pages not mirrored to GitHub.", status: proposed}
+      - {task_id: H04.T12, title: "Create connector failure and negative-result logging pattern.", status: proposed}
+
+  H05_Claim_Extraction:
+    lane_id: H05
+    theme: "Atomic claim extraction without treating claims as facts."
+    tasks:
+      - {task_id: H05.T01, title: "Extract atomic claims from Sheldonbrain README.", status: proposed}
+      - {task_id: H05.T02, title: "Extract atomic claims from OpenAI product spine.", status: proposed}
+      - {task_id: H05.T03, title: "Extract atomic claims from agent tool contract.", status: proposed}
+      - {task_id: H05.T04, title: "Extract code claims from batch_ingest.py.", status: proposed}
+      - {task_id: H05.T05, title: "Extract code claims from metadata_validator.py.", status: proposed}
+      - {task_id: H05.T06, title: "Extract code claims from notion_sync.py.", status: proposed}
+      - {task_id: H05.T07, title: "Extract code claims from rag_api.py.", status: proposed}
+      - {task_id: H05.T08, title: "Extract code claims from rag_wrapper.py.", status: proposed}
+      - {task_id: H05.T09, title: "Extract governance claims from Claude-originated artifacts.", status: proposed}
+      - {task_id: H05.T10, title: "Extract deployment/runtime claims into separate review lane.", status: proposed}
+      - {task_id: H05.T11, title: "Extract company/platform claims and company_name_gravity fields.", status: proposed}
+      - {task_id: H05.T12, title: "Create unsupported-claim quarantine list.", status: proposed}
+
+  H06_Adversarial_Review:
+    lane_id: H06
+    theme: "Stress testing, contradictions, and overclaim prevention."
+    tasks:
+      - {task_id: H06.T01, title: "Create Claude adversarial review queue.", status: proposed}
+      - {task_id: H06.T02, title: "Route governance-heavy Claude artifacts to Grok/Rootglass/Lucerna review.", status: proposed}
+      - {task_id: H06.T03, title: "Flag identity-sprawl risks.", status: proposed}
+      - {task_id: H06.T04, title: "Flag fiction-mode risks.", status: proposed}
+      - {task_id: H06.T05, title: "Flag authority-inflation language.", status: proposed}
+      - {task_id: H06.T06, title: "Flag deployment claims without current evidence.", status: proposed}
+      - {task_id: H06.T07, title: "Flag legal-ish or policy claims without source anchors.", status: proposed}
+      - {task_id: H06.T08, title: "Flag canon-like phrases where canon_status is not ratified.", status: proposed}
+      - {task_id: H06.T09, title: "Identify contradictions between README, docs, and code.", status: proposed}
+      - {task_id: H06.T10, title: "Create review finding packet for /store mismatch.", status: proposed}
+      - {task_id: H06.T11, title: "Create review finding packet for endpoint mismatch.", status: proposed}
+      - {task_id: H06.T12, title: "Preserve unresolved contradictions without resolving by synthesis.", status: proposed}
+
+  H07_Evals_Guardrails:
+    lane_id: H07
+    theme: "Reliability tests, eval fixtures, and guardrail checks."
+    tasks:
+      - {task_id: H07.T01, title: "Build eval fixture for raw-vs-summary detection.", status: proposed}
+      - {task_id: H07.T02, title: "Build eval fixture for canon-language detection.", status: proposed}
+      - {task_id: H07.T03, title: "Build eval fixture for authority inflation detection.", status: proposed}
+      - {task_id: H07.T04, title: "Build eval fixture for deployment/runtime overclaim detection.", status: proposed}
+      - {task_id: H07.T05, title: "Build eval fixture for missing receipt detection.", status: proposed}
+      - {task_id: H07.T06, title: "Build eval fixture for contradiction detection.", status: proposed}
+      - {task_id: H07.T07, title: "Build eval fixture for company name gravity.", status: proposed}
+      - {task_id: H07.T08, title: "Build eval fixture for memory_is_not_permission.", status: proposed}
+      - {task_id: H07.T09, title: "Add schema validation tests for claim packets.", status: proposed}
+      - {task_id: H07.T10, title: "Add schema validation tests for edge packets.", status: proposed}
+      - {task_id: H07.T11, title: "Add regression test for no silent canon promotion.", status: proposed}
+      - {task_id: H07.T12, title: "Create eval scorecard for extractor reliability.", status: proposed}
+
+  H08_Public_Safe_Product:
+    lane_id: H08
+    theme: "Public-safe wording, product clarity, and non-overclaiming."
+    tasks:
+      - {task_id: H08.T01, title: "Rewrite README status language into verified/current vs target/roadmap.", status: proposed}
+      - {task_id: H08.T02, title: "Add public-safe disclaimers to memory and graph docs.", status: proposed}
+      - {task_id: H08.T03, title: "Create one-page Sheldonbrain Graph Intake explainer.", status: proposed}
+      - {task_id: H08.T04, title: "Create operator quickstart without deployment claims.", status: proposed}
+      - {task_id: H08.T05, title: "Create trusted reviewer checklist.", status: proposed}
+      - {task_id: H08.T06, title: "Create contributor guide for non-canon packets.", status: proposed}
+      - {task_id: H08.T07, title: "Create glossary: raw, parsed, claim, evidence, review, decision, canon.", status: proposed}
+      - {task_id: H08.T08, title: "Create visual architecture map for provenance-first KG.", status: proposed}
+      - {task_id: H08.T09, title: "Create demo script using toy data only.", status: proposed}
+      - {task_id: H08.T10, title: "Create FAQ: graph is not truth/canon/authority.", status: proposed}
+      - {task_id: H08.T11, title: "Create release notes template with receipt requirements.", status: proposed}
+      - {task_id: H08.T12, title: "Create external-facing risk boundary statement.", status: proposed}
+
+  H09_Canon_Governance:
+    lane_id: H09
+    theme: "Human-root ratification, canon safety, and governance process."
+    tasks:
+      - {task_id: H09.T01, title: "Define Human-root decision packet format.", status: proposed}
+      - {task_id: H09.T02, title: "Define ratification scope rules.", status: proposed}
+      - {task_id: H09.T03, title: "Define supersession rules for canon candidates.", status: proposed}
+      - {task_id: H09.T04, title: "Define rejection/defer states for claims.", status: proposed}
+      - {task_id: H09.T05, title: "Create canon promotion checklist.", status: proposed}
+      - {task_id: H09.T06, title: "Create no-canon-without-receipts guardrail.", status: proposed}
+      - {task_id: H09.T07, title: "Create canon drift watchlist.", status: proposed}
+      - {task_id: H09.T08, title: "Create decision register index.", status: proposed}
+      - {task_id: H09.T09, title: "Create review-lane quorum patterns.", status: proposed}
+      - {task_id: H09.T10, title: "Create emergency rollback/de-ratification procedure.", status: proposed}
+      - {task_id: H09.T11, title: "Create memory palace preservation rules.", status: proposed}
+      - {task_id: H09.T12, title: "Create identity boundary rules.", status: proposed}
+
+  H10_Archive_Ops:
+    lane_id: H10
+    theme: "Operational rhythm, reporting, queues, and archive hygiene."
+    tasks:
+      - {task_id: H10.T01, title: "Create daily archive SITREP template.", status: proposed}
+      - {task_id: H10.T02, title: "Create weekly receipt debt report.", status: proposed}
+      - {task_id: H10.T03, title: "Create missing raw transcript hunt list.", status: proposed}
+      - {task_id: H10.T04, title: "Create duplicate artifact resolution queue.", status: proposed}
+      - {task_id: H10.T05, title: "Create orphan node report.", status: proposed}
+      - {task_id: H10.T06, title: "Create stale source report.", status: proposed}
+      - {task_id: H10.T07, title: "Create route-next queue by review lane.", status: proposed}
+      - {task_id: H10.T08, title: "Create mirrors-needed queue.", status: proposed}
+      - {task_id: H10.T09, title: "Create archive folder/path convention.", status: proposed}
+      - {task_id: H10.T10, title: "Create ingestion batch naming convention.", status: proposed}
+      - {task_id: H10.T11, title: "Create line/page anchor convention.", status: proposed}
+      - {task_id: H10.T12, title: "Create negative-result ledger.", status: proposed}
+
+  H11_Creative_Culture_Studio:
+    lane_id: H11
+    theme: "Movement-grade creative rituals and regenerative collaboration."
+    tasks:
+      - {task_id: H11.T01, title: "Turn Pilot Olympics into a studio operating ritual.", status: proposed}
+      - {task_id: H11.T02, title: "Create trophy categories for distinct contribution types.", status: proposed}
+      - {task_id: H11.T03, title: "Create synthesis council packet template.", status: proposed}
+      - {task_id: H11.T04, title: "Create idea seed to episode cluster graph mapping.", status: proposed}
+      - {task_id: H11.T05, title: "Create credit doctrine for generative collaboration.", status: proposed}
+      - {task_id: H11.T06, title: "Create cultural safety guardrails for Indigenous/science partner review.", status: proposed}
+      - {task_id: H11.T07, title: "Create consent-to-synthesize checklist.", status: proposed}
+      - {task_id: H11.T08, title: "Create creative motif registry.", status: proposed}
+      - {task_id: H11.T09, title: "Create pilot forge team formation rules.", status: proposed}
+      - {task_id: H11.T10, title: "Create celebration without ranking ritual.", status: proposed}
+      - {task_id: H11.T11, title: "Create worldbuilding provenance rules.", status: proposed}
+      - {task_id: H11.T12, title: "Create studio movement manifesto as non-canon candidate.", status: proposed}
+
+  H12_Strategy_Scaling:
+    lane_id: H12
+    theme: "Roadmap, dashboard, collaborators, and world-class execution cadence."
+    tasks:
+      - {task_id: H12.T01, title: "Create 30-day Aetherforge execution board.", status: proposed}
+      - {task_id: H12.T02, title: "Create 90-day world-class operations roadmap.", status: proposed}
+      - {task_id: H12.T03, title: "Prioritize top 12 blockers by leverage and receipt debt.", status: proposed}
+      - {task_id: H12.T04, title: "Create seat-by-seat recurring review cadence.", status: proposed}
+      - {task_id: H12.T05, title: "Create GitHub issue labels for lanes/status/risk.", status: proposed}
+      - {task_id: H12.T06, title: "Create dashboard metrics: receipts, contradictions, reviewed claims, blockers.", status: proposed}
+      - {task_id: H12.T07, title: "Define OpenAI integration path: extraction, evals, guardrails, agents.", status: proposed}
+      - {task_id: H12.T08, title: "Define connector expansion path across GitHub/Drive/Notion/Gamma/chat/external.", status: proposed}
+      - {task_id: H12.T09, title: "Create hiring/collaborator role map from review lanes.", status: proposed}
+      - {task_id: H12.T10, title: "Create funder/stakeholder safe narrative without overclaims.", status: proposed}
+      - {task_id: H12.T11, title: "Create operator handbook table of contents.", status: proposed}
+      - {task_id: H12.T12, title: "Create first world-class demo path using verified toy lineage.", status: proposed}
+
+first_execution_slice:
+  - {task_id: H03.T01, title: "Patch /store payload mismatch between batch_ingest.py and rag_api.py.", assigned_lane: Copilot, execution_state: next, why_first: "Known contradiction with direct implementation value."}
+  - {task_id: H03.T02, title: "Create endpoint truth table for README/product spine vs actual API routes.", assigned_lane: TIDELOCK, execution_state: next, why_first: "Prevents repo docs from outrunning code truth."}
+  - {task_id: H01.T01, title: "Backfill Drive file IDs into KG inventory rows.", assigned_lane: Hashlight, execution_state: next, why_first: "Turns placeholders into source anchors."}
+  - {task_id: H06.T01, title: "Create Claude adversarial review queue.", assigned_lane: Grok, execution_state: next, why_first: "Routes governance-heavy material safely."}
+  - {task_id: H07.T08, title: "Build eval fixture for memory_is_not_permission.", assigned_lane: GPTBrain, execution_state: next, why_first: "Protects core invariant."}
+  - {task_id: H10.T12, title: "Create negative-result ledger.", assigned_lane: Fossilbranch, execution_state: next, why_first: "Preserves non-findings as useful review data."}
+  - {task_id: H08.T10, title: "Create FAQ: graph is not truth/canon/authority.", assigned_lane: Rootglass, execution_state: next, why_first: "Reduces future overclaim drift."}
+  - {task_id: H04.T08, title: "Define connector freshness and stale-source rules.", assigned_lane: Lucerna, execution_state: next, why_first: "Keeps connected sources honest."}
+  - {task_id: H09.T05, title: "Create canon promotion checklist.", assigned_lane: Rootglass, execution_state: next, why_first: "Prevents accidental canon. "}
+  - {task_id: H12.T03, title: "Prioritize top 12 blockers by leverage and receipt debt.", assigned_lane: AtlasBrain, execution_state: next, why_first: "Turns 144 tasks into a focused execution path."}
+  - {task_id: H11.T01, title: "Turn Pilot Olympics into a studio operating ritual.", assigned_lane: Lumenwright_Vale, execution_state: next, why_first: "Builds cultural engine, not just pipeline."}
+  - {task_id: H02.T08, title: "Create graph validation rules for required fields.", assigned_lane: GPTBrain, execution_state: next, why_first: "Makes graph writes safer and machine-checkable."}
+
+execution_receipt:
+  created_by: "GPT-5.5 Thinking"
+  created_for: "Aetherforge / Sheldonbrain KG ingestion"
+  action_taken: "Created 12x12 task matrix candidate artifact."
+  next_action: "Execute first_execution_slice one item at a time with receipts."
