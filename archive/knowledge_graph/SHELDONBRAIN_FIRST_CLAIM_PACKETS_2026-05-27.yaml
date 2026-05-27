@@ -1,0 +1,376 @@
+# Sheldonbrain First Claim Packets
+# Date: 2026-05-27
+# Status: candidate_operation_not_canon
+# Canon: no
+# Deployment: no
+# Authority: none
+# Keeper: The graph shows where review is needed. It does not decide what is true.
+
+packet_version: "0.1"
+status: "candidate_operation_not_canon"
+canon_status: "not_canon"
+deployment_status: "not_deployment"
+authority_status: "none"
+ratification_gate: "Human-root"
+source_mode: "repo_inspection_first_pass"
+
+inspected_artifacts:
+  - id: ART-SB-0001
+    title: "Sheldonbrain RAG API README"
+    surface: GitHub
+    repo: "atlaslattice/sheldonbrain-rag-api"
+    path: "README.md"
+    raw_export_status: present
+    artifact_status: source_artifact
+    notes: "Contains product claims, invariants, architecture, and deployment language."
+  - id: ART-SB-0002
+    title: "Batch ingestion pipeline"
+    surface: GitHub
+    repo: "atlaslattice/sheldonbrain-rag-api"
+    path: "batch_ingest.py"
+    raw_export_status: present
+    artifact_status: code_module
+    notes: "Reads files, validates metadata, posts to RAG API, optionally backs up to Notion."
+  - id: ART-SB-0003
+    title: "Metadata validator"
+    surface: GitHub
+    repo: "atlaslattice/sheldonbrain-rag-api"
+    path: "metadata_validator.py"
+    raw_export_status: present
+    artifact_status: code_module
+    notes: "Lattice-aware validator with required metadata fields and legacy sphere mapping."
+  - id: ART-SB-0004
+    title: "Notion sync module"
+    surface: GitHub
+    repo: "atlaslattice/sheldonbrain-rag-api"
+    path: "notion_sync.py"
+    raw_export_status: present
+    artifact_status: adapter
+    notes: "Fetches Notion entries and upserts to Pinecone; labeled bidirectional but inspected visible path is Notion to Pinecone."
+  - id: ART-SB-0005
+    title: "RAG API"
+    surface: GitHub
+    repo: "atlaslattice/sheldonbrain-rag-api"
+    path: "rag_api.py"
+    raw_export_status: present
+    artifact_status: code_module
+    notes: "Visible endpoints: /health, /query, /recall, /store, /grok, /sync."
+  - id: ART-SB-0006
+    title: "RAG wrapper"
+    surface: GitHub
+    repo: "atlaslattice/sheldonbrain-rag-api"
+    path: "rag_wrapper.py"
+    raw_export_status: present
+    artifact_status: code_module
+    notes: "Formats retrieval as archival memory for prompt injection; needs stronger context-only warning."
+  - id: ART-SB-0007
+    title: "Krakoa / GPTBrain wiring note"
+    surface: GitHub
+    repo: "atlaslattice/sheldonbrain-rag-api"
+    path: "KRAKOA_GPTBRAIN_WIRING.md"
+    raw_export_status: present
+    artifact_status: adapter
+    notes: "Labels Sheldonbrain as candidate substrate, not canon authority, not subjective continuity, not autonomous execution permission."
+  - id: ART-SB-0008
+    title: "OpenAI product spine"
+    surface: GitHub
+    repo: "atlaslattice/sheldonbrain-rag-api"
+    path: "docs/OPENAI_PRODUCT_SPINE.md"
+    raw_export_status: present
+    artifact_status: design_spec
+    notes: "Defines provenance, governance, receipts, lifecycle, and memory != permission doctrine."
+  - id: ART-SB-0009
+    title: "OpenAI agent tool contract"
+    surface: GitHub
+    repo: "atlaslattice/sheldonbrain-rag-api"
+    path: "docs/OPENAI_AGENT_TOOL_CONTRACT.md"
+    raw_export_status: present
+    artifact_status: tool_contract
+    notes: "Defines agent-callable memory tool contract and required response envelope."
+  - id: ART-SB-0010
+    title: "KG source inventory"
+    surface: GitHub
+    repo: "atlaslattice/sheldonbrain-rag-api"
+    path: "archive/knowledge_graph/KG_SOURCE_INVENTORY_2026-05-24.yaml"
+    raw_export_status: present
+    artifact_status: source_inventory
+    notes: "Seeded clipboard, not canon; many entries still have unresolved receipts."
+
+claims:
+  - id: CLM-SB-0001
+    text: "Sheldonbrain RAG API is a repo-visible RAG/memory substrate candidate using Flask, Gemini embeddings, Pinecone, and Notion backup."
+    derived_from: [ART-SB-0001, ART-SB-0005, ART-SB-0007]
+    claim_status: extracted
+    canon_status: not_canon
+    evidence_status: partial
+    review_lanes: [GPTBrain, TIDELOCK, Lucerna]
+    risks:
+      authority_risk: medium
+      legal_policy_risk: low
+      canon_drift_risk: medium
+      company_name_gravity: medium
+    missing_receipts:
+      - "current deployment smoke-test"
+      - "test run evidence"
+      - "current secrets policy review"
+    overclaims_to_avoid:
+      - "production-ready without current verification"
+      - "memory substrate equals authority"
+
+  - id: CLM-SB-0002
+    text: "The codebase contains concrete ingestion surfaces: batch_ingest.py, metadata_validator.py, notion_sync.py, rag_api.py, and rag_wrapper.py."
+    derived_from: [ART-SB-0002, ART-SB-0003, ART-SB-0004, ART-SB-0005, ART-SB-0006]
+    claim_status: supported_by_repo_paths
+    canon_status: not_canon
+    evidence_status: anchored
+    review_lanes: [Copilot, TIDELOCK]
+    risks:
+      authority_risk: low
+      legal_policy_risk: low
+      canon_drift_risk: low
+      company_name_gravity: none
+    missing_receipts:
+      - "line-level implementation audit beyond first pass"
+
+  - id: CLM-SB-0003
+    text: "batch_ingest.py posts text+metadata to /store, while rag_api.py /store expects content+sphere+source+metadata."
+    derived_from: [ART-SB-0002, ART-SB-0005]
+    claim_status: extracted_contradiction
+    canon_status: not_canon
+    evidence_status: anchored
+    contradiction_type: "payload_contract_mismatch"
+    review_lanes: [Copilot, TIDELOCK]
+    risks:
+      authority_risk: low
+      legal_policy_risk: low
+      canon_drift_risk: low
+      company_name_gravity: none
+    missing_receipts:
+      - "runtime reproduction"
+      - "test case"
+    suggested_action: "Patch either batch_ingest.py or rag_api.py to accept a shared schema."
+
+  - id: CLM-SB-0004
+    text: "The product spine claims /classify and /lattice endpoints exist, but the inspected rag_api.py first pass did not show those endpoints."
+    derived_from: [ART-SB-0005, ART-SB-0008]
+    claim_status: extracted_contradiction
+    canon_status: not_canon
+    evidence_status: partial
+    contradiction_type: "doc_code_endpoint_mismatch"
+    review_lanes: [TIDELOCK, Copilot]
+    risks:
+      authority_risk: low
+      legal_policy_risk: low
+      canon_drift_risk: medium
+      company_name_gravity: none
+    missing_receipts:
+      - "scan for alternate API files"
+      - "route table / tests"
+    suggested_action: "Create endpoint truth table across all API files."
+
+  - id: CLM-SB-0005
+    text: "The repo already contains a non-canon KG inventory at archive/knowledge_graph/KG_SOURCE_INVENTORY_2026-05-24.yaml."
+    derived_from: [ART-SB-0010]
+    claim_status: supported_by_repo_path
+    canon_status: not_canon
+    evidence_status: anchored
+    review_lanes: [Fossilbranch, Hashlight, Lucerna]
+    risks:
+      authority_risk: low
+      legal_policy_risk: low
+      canon_drift_risk: medium
+      company_name_gravity: none
+    missing_receipts:
+      - "backfill Drive IDs"
+      - "sha256 manifest"
+      - "GitHub mirror status per source"
+
+  - id: CLM-SB-0006
+    text: "The product spine and agent contract correctly encode memory != permission and require provenance/receipt-aware responses."
+    derived_from: [ART-SB-0008, ART-SB-0009]
+    claim_status: supported_by_docs
+    canon_status: not_canon
+    evidence_status: anchored
+    review_lanes: [Rootglass, GPTBrain, Lucerna]
+    risks:
+      authority_risk: low
+      legal_policy_risk: low
+      canon_drift_risk: low
+      company_name_gravity: none
+    missing_receipts:
+      - "implementation conformance tests"
+      - "query response envelope verification"
+
+  - id: CLM-SB-0007
+    text: "README language includes production/deployment/completeness phrasing that should be treated as unverified unless supported by current tests and operator review."
+    derived_from: [ART-SB-0001, ART-SB-0007]
+    claim_status: adversarial_flag
+    canon_status: not_canon
+    evidence_status: partial
+    review_lanes: [Grok, Rootglass, Lucerna, TIDELOCK]
+    risks:
+      authority_risk: medium
+      legal_policy_risk: low
+      canon_drift_risk: high
+      company_name_gravity: medium
+    missing_receipts:
+      - "current deployment proof"
+      - "test logs"
+      - "operator confirmation"
+    overclaims_to_avoid:
+      - "production ready"
+      - "backup complete"
+      - "deployment success"
+      - "continuity substrate as proven runtime"
+
+first_artifact_nodes:
+  - node_id: NODE-SB-0001
+    node_type: SourceArtifact
+    title: "Sheldonbrain codebase"
+    surface: GitHub
+    source_uri: "github://atlaslattice/sheldonbrain-rag-api"
+    artifact_status: candidate
+    canon_status: not_canon
+    raw_export_status: present
+    review_lane: TIDELOCK
+  - node_id: NODE-SB-0002
+    node_type: Adapter
+    title: "GPTBrain adapter / Krakoa wiring note"
+    source_uri: "github://atlaslattice/sheldonbrain-rag-api/KRAKOA_GPTBRAIN_WIRING.md"
+    artifact_status: review
+    canon_status: not_canon
+    raw_export_status: present
+    review_lane: GPTBrain
+  - node_id: NODE-SB-0003
+    node_type: Adapter
+    title: "Notion source root sync"
+    source_uri: "github://atlaslattice/sheldonbrain-rag-api/notion_sync.py"
+    artifact_status: candidate
+    canon_status: not_canon
+    raw_export_status: present
+    review_lane: Hashlight
+  - node_id: NODE-SB-0004
+    node_type: CodeModule
+    title: "Batch ingestion module"
+    source_uri: "github://atlaslattice/sheldonbrain-rag-api/batch_ingest.py"
+    artifact_status: candidate
+    canon_status: not_canon
+    raw_export_status: present
+    review_lane: Copilot
+  - node_id: NODE-SB-0005
+    node_type: CodeModule
+    title: "Metadata validator / lattice classifier wrapper"
+    source_uri: "github://atlaslattice/sheldonbrain-rag-api/metadata_validator.py"
+    artifact_status: candidate
+    canon_status: not_canon
+    raw_export_status: present
+    review_lane: GPTBrain
+  - node_id: NODE-SB-0006
+    node_type: SourceArtifact
+    title: "TCSS v1.1"
+    source_uri: unknown
+    artifact_status: unknown
+    canon_status: not_canon
+    raw_export_status: unknown
+    review_lane: Lucerna
+    missing_receipts: ["source path", "raw export", "sha256"]
+  - node_id: NODE-SB-0007
+    node_type: SourceArtifact
+    title: "PATH_B v0.2"
+    source_uri: unknown
+    artifact_status: unknown
+    canon_status: not_canon
+    raw_export_status: unknown
+    review_lane: Fossilbranch
+    missing_receipts: ["source path", "raw export", "sha256"]
+  - node_id: NODE-SB-0008
+    node_type: SourceArtifact
+    title: "O_AI integration scaffold"
+    source_uri: unknown
+    artifact_status: unknown
+    canon_status: not_canon
+    raw_export_status: unknown
+    review_lane: GPTBrain
+    missing_receipts: ["source path", "raw export", "sha256"]
+  - node_id: NODE-SB-0009
+    node_type: SourceArtifact
+    title: "D-Φ review support"
+    source_uri: unknown
+    artifact_status: unknown
+    canon_status: not_canon
+    raw_export_status: unknown
+    review_lane: AtlasBrain
+    missing_receipts: ["source path", "raw export", "sha256"]
+  - node_id: NODE-SB-0010
+    node_type: SourceArtifact
+    title: "v2.1 manifest"
+    source_uri: "github://atlaslattice/sheldonbrain-rag-api/README.md"
+    artifact_status: candidate
+    canon_status: not_canon
+    raw_export_status: present
+    review_lane: TIDELOCK
+    missing_receipts: ["dedicated manifest path", "test evidence", "deployment verification"]
+
+suggested_edges:
+  - edge_id: EDGE-SB-0001
+    edge_type: derived_from
+    from: CLM-SB-0001
+    to: ART-SB-0001
+    promotion_semantics: none
+  - edge_id: EDGE-SB-0002
+    edge_type: contradicts
+    from: CLM-SB-0003
+    to: CLM-SB-0002
+    promotion_semantics: none
+  - edge_id: EDGE-SB-0003
+    edge_type: blocked_by
+    from: NODE-SB-0004
+    to: CLM-SB-0003
+    promotion_semantics: none
+  - edge_id: EDGE-SB-0004
+    edge_type: missing_receipt
+    from: NODE-SB-0006
+    to: "EvidenceAnchor:source_path"
+    promotion_semantics: negative_signal_only
+  - edge_id: EDGE-SB-0005
+    edge_type: requires_review
+    from: CLM-SB-0007
+    to: "ReviewLane:Grok"
+    promotion_semantics: none
+  - edge_id: EDGE-SB-0006
+    edge_type: belongs_to_lane
+    from: NODE-SB-0001
+    to: "ReviewLane:TIDELOCK"
+    promotion_semantics: none
+
+negative_results_preserved:
+  - "Attempt to create KG_NODE_EDGE_SCHEMA_v0.1.yaml returned path-exists/update-required; existing schema was fetched and updated instead."
+  - "Search for TCSS PATH_B O_AI D-Φ v2.1 manifest in sheldonbrain-rag-api returned no direct code-search hits in first pass."
+  - "Notion source roots are represented by code path notion_sync.py, but actual Notion database ID/source root receipts need secret-safe confirmation."
+
+next_review_actions:
+  - id: ACT-SB-0001
+    action: "Patch /store schema mismatch between batch_ingest.py and rag_api.py."
+    lane: Copilot
+    status: proposed
+    requires_human_approval: true
+  - id: ACT-SB-0002
+    action: "Create endpoint truth table for README/product spine vs actual API routes."
+    lane: TIDELOCK
+    status: proposed
+    requires_human_approval: false
+  - id: ACT-SB-0003
+    action: "Backfill KG source inventory with Drive IDs and sha256 receipts."
+    lane: Hashlight
+    status: proposed
+    requires_human_approval: false
+  - id: ACT-SB-0004
+    action: "Route Claude-originated governance artifacts to adversarial review queue."
+    lane: Grok
+    status: proposed
+    requires_human_approval: false
+  - id: ACT-SB-0005
+    action: "Flag canon-like phrases where canon_status != ratified."
+    lane: Lucerna
+    status: proposed
+    requires_human_approval: false
