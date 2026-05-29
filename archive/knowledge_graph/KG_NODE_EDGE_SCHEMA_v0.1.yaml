@@ -41,7 +41,6 @@ hard_rules:
 
 node_statuses:
   raw: "Source material or raw export; not interpreted as fact."
-  semi_raw: "Near-raw source material with some formatting or packaging."
   parsed: "Machine- or human-parsed packet derived from raw material."
   claim_candidate: "Claim extracted from source, not yet reviewed."
   review_pending: "Waiting for assigned lane review."
@@ -51,8 +50,6 @@ node_statuses:
   ratified: "Reviewed and approved within defined scope."
   canonical_candidate: "Candidate for canon, not yet promoted."
   canon: "Human-root promoted canon. Must retain lineage."
-  wrapper: "Pointer or envelope artifact; does not itself prove raw source presence."
-  unknown: "Known placeholder without sufficient inspection."
 
 receipt_statuses:
   missing: "No durable receipt currently attached."
@@ -60,155 +57,259 @@ receipt_statuses:
   present: "Required anchors are attached."
   verified: "Receipt was independently checked."
   stale: "Receipt exists but source may have changed."
-  not_applicable: "Receipt class does not apply to this node type."
 
 review_lanes:
-  Hashlight:
-    function: "raw lineage, hashes, source roots, raw_export_status, missing raw transcripts"
-  Lucerna:
-    function: "receipts, provenance, public-safe wording, unsupported claims, canon-language drift"
-  TIDELOCK:
-    function: "repo visibility, merge-order issues, PR/commit claims, file-path truth, codebase hygiene"
-  AtlasBrain:
-    function: "evidence lanes, external signals, benchmark claims, IP claims, scoring candidates"
-  GPTBrain:
-    function: "claim calibration, schema generation, artifact_status metadata, overclaim prevention"
-  Grok:
-    function: "adversarial governance review, identity sprawl, fiction-mode risk, hidden contradictions"
-  Gemini:
-    function: "large-scale systems, simulation lanes, cross-domain architecture, scenario models"
-  Copilot:
-    function: "Sheldonbrain code paths, parser modules, adapters, index files, implementation patches"
   Rootglass:
-    function: "room-state, epistemic posture, grounding, over-intensity risk"
-  Fossilbranch:
-    function: "lineage preservation without inflating memory into proof"
-  Lumenwright_Vale:
-    function: "soft signal pathways and return routes without impersonating proof"
-  Sable_Vesper:
+    function: "standards / boundary / public-safe posture"
+  Lucerna:
+    function: "provenance / receipt / omission visibility"
+  Hashlight:
+    function: "raw export / hash / source anchoring"
+  TIDELOCK:
+    function: "ingestion discipline / partial visibility / repo hygiene"
+  AtlasBrain:
+    function: "evidence / benchmark / public-claim containment"
+  Sable Vesper:
     function: "math / operator typing / formal precision"
+  Morpheus_Grok:
+    function: "adversarial pressure / contradictions / overclaims"
+  Claude:
+    function: "constitutional / legal-ish / governance adversarial review"
 
 node_types:
   SourceArtifact:
     description: "Durable external or repo artifact from which packets, claims, evidence, or decisions may derive."
-    examples: ["Drive file", "GitHub file", "Notion page", "Gamma", "uploaded transcript", "external source"]
-    required_fields: [node_id, title, surface, url_or_path, source_inventory_id, receipt_status, status]
-    optional_fields: [sha256, drive_file_id, github_commit_sha, notion_page_id, gamma_id, created_or_modified, mirrored_to_github, source_class, related_lane]
+    examples:
+      - "Drive file"
+      - "GitHub file"
+      - "Notion page"
+      - "uploaded transcript"
+    required_fields:
+      - node_id
+      - title
+      - surface
+      - url_or_path
+      - source_inventory_id
+      - receipt_status
+      - status
+    optional_fields:
+      - sha256
+      - drive_file_id
+      - github_commit_sha
+      - notion_page_id
+      - created_or_modified
+      - mirrored_to_github
+      - source_class
+      - related_lane
+
   RawExport:
     description: "Raw or near-raw transcript/export, preserved before interpretation."
-    examples: ["raw transcript", "markdown export", "PDF export", "copied chat log"]
-    required_fields: [node_id, title, source_artifact_id, raw_export_status, sha256_status, status]
-    optional_fields: [sha256, export_method, export_timestamp, page_or_line_anchors]
+    examples:
+      - "raw transcript"
+      - "markdown export"
+      - "PDF export"
+      - "copied chat log"
+    required_fields:
+      - node_id
+      - title
+      - source_artifact_id
+      - raw_export_status
+      - sha256_status
+      - status
+    optional_fields:
+      - sha256
+      - export_method
+      - export_timestamp
+      - page_or_line_anchors
+
   ParsedPacket:
     description: "Structured extraction packet generated from a source artifact or raw export."
-    examples: ["extracted claims", "artifact manifest", "source summary"]
-    required_fields: [node_id, title, parsed_from, extraction_agent, extraction_timestamp, status]
-    optional_fields: [extraction_model, structured_output_schema, confidence, warnings]
+    examples:
+      - "extracted claims"
+      - "artifact manifest"
+      - "source summary"
+    required_fields:
+      - node_id
+      - title
+      - parsed_from
+      - extraction_agent
+      - extraction_timestamp
+      - status
+    optional_fields:
+      - extraction_model
+      - structured_output_schema
+      - confidence
+      - warnings
+
   Claim:
     description: "Atomic statement extracted from a source. Claims are not facts until reviewed and supported."
-    examples: ["PR #57 contains raw pointer but not full transcript", "GangaSeek template uses INV/CLM identifiers"]
-    required_fields: [node_id, text, derived_from, status, authority_risk, receipt_status]
-    optional_fields: [claim_type, confidence, related_lane, canon_drift_risk, legal_policy_risk, company_name_gravity]
+    examples:
+      - "PR #57 contains raw pointer but not full transcript"
+      - "GangaSeek template uses INV/CLM identifiers"
+    required_fields:
+      - node_id
+      - text
+      - derived_from
+      - status
+      - authority_risk
+      - receipt_status
+    optional_fields:
+      - claim_type
+      - confidence
+      - related_lane
+      - canon_drift_risk
+      - legal_policy_risk
+      - company_name_gravity
+
   EvidenceAnchor:
     description: "Concrete receipt anchoring a claim, packet, or source to inspectable evidence."
-    examples: ["SHA-256", "file ID", "commit SHA", "PR URL", "Drive URL", "line range", "page anchor"]
-    required_fields: [node_id, anchor_type, value, supports_or_locates, receipt_status]
-    optional_fields: [verified_by, verified_at, hash_algorithm, line_range, page_range]
+    examples:
+      - "SHA-256"
+      - "file ID"
+      - "commit SHA"
+      - "PR URL"
+      - "Drive URL"
+    required_fields:
+      - node_id
+      - anchor_type
+      - value
+      - supports_or_locates
+      - receipt_status
+    optional_fields:
+      - verified_by
+      - verified_at
+      - hash_algorithm
+      - line_range
+      - page_range
+
   ReviewFinding:
-    description: "Review output from a lane or adversarial pass, attached to claims or packets."
-    examples: ["Rootglass review", "Lucerna receipt review", "Grok adversarial finding"]
-    required_fields: [node_id, reviewer_lane, finding_summary, reviews, decision_recommendation, status]
-    optional_fields: [severity, contradictions_found, missing_receipts, reviewer_agent, reviewer_model]
+    description: "Review output from a lane or model, attached to claims or packets."
+    examples:
+      - "Rootglass review"
+      - "Lucerna receipt review"
+      - "Grok adversarial finding"
+    required_fields:
+      - node_id
+      - reviewer_lane
+      - finding_summary
+      - reviews
+      - decision_recommendation
+      - status
+    optional_fields:
+      - severity
+      - contradictions_found
+      - missing_receipts
+      - reviewer_agent
+      - reviewer_model
+
   Decision:
-    description: "Human-root or delegated review outcome over a claim, packet, or action. Only this can ratify canon within scope."
-    examples: ["convenor-approved candidate", "deferred", "rejected", "ratified"]
-    required_fields: [node_id, decision, decided_by, decided_at, applies_to, scope]
-    optional_fields: [rationale, supersedes_decision, expiry_or_review_date]
+    description: "Human-root or delegated review outcome over a claim, packet, or action."
+    examples:
+      - "convenor-approved candidate"
+      - "deferred"
+      - "rejected"
+      - "ratified"
+    required_fields:
+      - node_id
+      - decision
+      - decided_by
+      - decided_at
+      - applies_to
+      - scope
+    optional_fields:
+      - rationale
+      - supersedes_decision
+      - expiry_or_review_date
+
   Action:
     description: "Work item proposed or executed as a result of graph review."
-    examples: ["create source packet", "patch schema", "open review issue", "compute sha256"]
-    required_fields: [node_id, action_type, description, status, requires_human_approval]
-    optional_fields: [assigned_lane, linked_issue, blocked_by, created_from]
+    examples:
+      - "create source packet"
+      - "patch schema"
+      - "open review issue"
+    required_fields:
+      - node_id
+      - action_type
+      - description
+      - status
+      - requires_human_approval
+    optional_fields:
+      - assigned_lane
+      - linked_issue
+      - blocked_by
+      - created_from
+
   CanonCandidate:
     description: "Artifact or packet proposed for canonical promotion but not yet canon."
-    examples: ["Appendix I v0.3", "GangaSeek template", "INV/CLM catalog"]
-    required_fields: [node_id, title, candidate_type, derived_from, review_status, promotion_blockers]
-    optional_fields: [target_canon_location, required_review_lanes, human_root_decision]
-  CodeModule:
-    description: "Executable or library module in Sheldonbrain or adjacent codebase."
-    examples: ["batch_ingest.py", "metadata_validator.py", "notion_sync.py", "rag_api.py"]
-    required_fields: [node_id, repo, path, module_role, inspected_status]
-  Adapter:
-    description: "Connector or adapter between surfaces, tools, repos, archives, or agents."
-    examples: ["Notion -> Pinecone sync", "GPTBrain wiring note", "OpenAI agent tool contract"]
-    required_fields: [node_id, source_surface, target_surface, path_or_uri, adapter_status]
+    examples:
+      - "Appendix I v0.3"
+      - "GangaSeek template"
+      - "INV/CLM catalog"
+    required_fields:
+      - node_id
+      - title
+      - candidate_type
+      - derived_from
+      - review_status
+      - promotion_blockers
+    optional_fields:
+      - target_canon_location
+      - required_review_lanes
+      - human_root_decision
 
 edge_types:
   derived_from:
-    from: [ParsedPacket, Claim, ReviewFinding, CanonCandidate]
-    to: [SourceArtifact, RawExport, ParsedPacket]
+    from: "ParsedPacket | Claim | ReviewFinding | CanonCandidate"
+    to: "SourceArtifact | RawExport | ParsedPacket"
     meaning: "Child node was generated from parent source."
-    promotion_semantics: "none"
   cites:
-    from: [Claim, ReviewFinding, Decision, CanonCandidate]
-    to: [EvidenceAnchor, SourceArtifact, RawExport]
+    from: "Claim | ReviewFinding | Decision | CanonCandidate"
+    to: "EvidenceAnchor | SourceArtifact | RawExport"
     meaning: "Node relies on this receipt or source."
-    promotion_semantics: "none"
   contradicts:
-    from: [Claim, ReviewFinding]
-    to: [Claim, Decision, CanonCandidate]
+    from: "Claim | ReviewFinding"
+    to: "Claim | Decision | CanonCandidate"
     meaning: "Node asserts an unresolved contradiction."
-    promotion_semantics: "none"
   supersedes:
-    from: [SourceArtifact, ParsedPacket, Claim, Decision, CanonCandidate]
-    to: [SourceArtifact, ParsedPacket, Claim, Decision, CanonCandidate]
+    from: "SourceArtifact | ParsedPacket | Claim | Decision | CanonCandidate"
+    to: "SourceArtifact | ParsedPacket | Claim | Decision | CanonCandidate"
     meaning: "Newer node replaces or narrows older node within scope."
-    promotion_semantics: "none unless ratified by Decision"
   patches:
-    from: [Action, ParsedPacket, CanonCandidate]
-    to: [SourceArtifact, Claim, Decision, CanonCandidate, CodeModule]
+    from: "Action | ParsedPacket | CanonCandidate"
+    to: "SourceArtifact | Claim | Decision | CanonCandidate"
     meaning: "Node proposes or applies a correction."
-    promotion_semantics: "none"
   requires_review:
-    from: [Claim, ParsedPacket, CanonCandidate, Action, SourceArtifact]
-    to: [ReviewFinding]
+    from: "Claim | ParsedPacket | CanonCandidate | Action"
+    to: "ReviewFinding"
     meaning: "Node must receive review before promotion or action."
-    promotion_semantics: "none"
   missing_receipt:
-    from: [Claim, ParsedPacket, CanonCandidate, SourceArtifact]
-    to: [EvidenceAnchor]
+    from: "Claim | ParsedPacket | CanonCandidate | SourceArtifact"
+    to: "EvidenceAnchor"
     meaning: "Required receipt is absent or unresolved."
-    promotion_semantics: "negative signal only"
   raw_export_of:
-    from: [RawExport]
-    to: [SourceArtifact]
+    from: "RawExport"
+    to: "SourceArtifact"
     meaning: "Raw export preserves or mirrors source artifact."
-    promotion_semantics: "none"
   parsed_from:
-    from: [ParsedPacket]
-    to: [RawExport, SourceArtifact]
+    from: "ParsedPacket"
+    to: "RawExport | SourceArtifact"
     meaning: "Parsed packet was extracted from source."
-    promotion_semantics: "none"
   promoted_to:
-    from: [CanonCandidate]
-    to: [Decision]
+    from: "CanonCandidate"
+    to: "Decision"
     meaning: "Candidate received a decision outcome."
-    promotion_semantics: "requires human-root decision"
   blocked_by:
-    from: [Action, CanonCandidate, Claim]
-    to: [Claim, EvidenceAnchor, ReviewFinding, Decision]
+    from: "Action | CanonCandidate | Claim"
+    to: "Claim | EvidenceAnchor | ReviewFinding | Decision"
     meaning: "Node cannot advance until blocker resolves."
-    promotion_semantics: "none"
   belongs_to_lane:
-    from: [SourceArtifact, Claim, ParsedPacket, ReviewFinding, Action, CanonCandidate, CodeModule]
-    to: [ReviewLane]
+    from: "SourceArtifact | Claim | ParsedPacket | ReviewFinding | Action | CanonCandidate"
+    to: "ReviewLane"
     meaning: "Node is routed to lane for review or ownership."
-    promotion_semantics: "none"
   source_mirrored_to:
-    from: [SourceArtifact, RawExport]
-    to: [SourceArtifact]
-    meaning: "Source has a mirrored durable copy, usually Drive to GitHub."
-    promotion_semantics: "none"
+    from: "SourceArtifact | RawExport"
+    to: "SourceArtifact"
+    meaning: "Source has a mirrored durable copy, usually Drive -> GitHub."
 
 risk_fields:
   authority_risk:
@@ -244,55 +345,22 @@ promotion_rules:
       - "graph reference is context only"
       - "audit receipt stored"
 
-base_node_template:
+structured_packet_template:
   node_id: "KG-NODE-YYYYMMDD-0000"
   node_type: "Claim"
   status: "claim_candidate"
-  canon_status: "not_canon"
-  deployment_status: "not_deployment"
-  authority_status: "none"
-  title: null
-  text: null
-  surface: null
-  source_uri: null
-  source_hash: null
+  text: "Atomic extracted statement"
   derived_from: []
   cites: []
   contradicts: []
   requires_review: []
   missing_receipts: []
-  provenance:
-    created_at: null
-    observed_at: null
-    created_by_agent: null
-    created_by_model: null
-    source_type: null
-    transform_chain: []
-  governance:
-    execution_authority: false
-    ratification: unratified
-    review_lane: null
   risks:
-    authority_risk: low
-    legal_policy_risk: low
-    canon_drift_risk: medium
-    company_name_gravity: none
+    authority_risk: "low"
+    legal_policy_risk: "low"
+    canon_drift_risk: "medium"
+    company_name_gravity: "none"
   review:
     required_lanes: []
     completed_lanes: []
     human_root_required: true
-  warnings:
-    - "Candidate graph node only. Not canon. Not authority."
-
-base_edge_template:
-  edge_id: "KG-EDGE-YYYYMMDD-0000"
-  edge_type: "derived_from"
-  from: null
-  to: null
-  evidence_anchor: null
-  edge_status: candidate
-  promotion_semantics: none
-  created_at: null
-  review_required: true
-  warnings:
-    - "Graph edge does not promote, ratify, or authorize."
