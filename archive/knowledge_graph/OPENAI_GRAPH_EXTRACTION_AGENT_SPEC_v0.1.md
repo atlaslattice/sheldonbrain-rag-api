@@ -30,6 +30,27 @@ OpenAI should build the map from sources to claims to evidence to review to acti
 
 ---
 
+## Human-root doctrine binding
+
+This spec is bound to:
+
+```text
+archive/knowledge_graph/CANONICAL_GEOMETRY_MANY_VERSION_SYNTHESIS_DOCTRINE_v0.1.md
+```
+
+Operational meaning:
+
+```text
+many versions before synthesis
+fossils before polish
+council before canon
+website before law
+```
+
+The extraction pipeline must not optimize toward a single source of truth during the working phase. It must preserve branches, fossils, failed paths, contradictions, variants, and candidate artifacts before any synthesis attempt.
+
+---
+
 ## Knowledge graph separation
 
 The pipeline must preserve the difference between:
@@ -41,6 +62,8 @@ raw source -> parsed facts -> claims -> evidence -> review -> action
 The graph is not a memory blob. It is a receipt-indexed map of what exists, what it claims, what supports it, what contradicts it, and what still needs review.
 
 No agent may skip directly from `SourceArtifact` to `Canon`.
+
+No agent may collapse multiple candidate versions into a single synthesized version unless preservation, review, and Human-root adjudication have occurred.
 
 ---
 
@@ -71,6 +94,7 @@ May create:
 - `SourceArtifact` candidates
 - missing receipt actions
 - mirror recommendations
+- fossil-preservation actions
 
 May not create:
 
@@ -89,12 +113,14 @@ May create:
 - `ParsedPacket` candidates
 - `Claim` candidates
 - `missing_receipt` edges
+- `variant_of` / version-preservation notes when candidate versions conflict
 
 May not create:
 
 - `Decision`
 - canon status
 - action authority
+- flattened synthesis that erases source variants
 
 Hard rule: claims are not facts; claims require review.
 
@@ -124,11 +150,13 @@ May create:
 - `contradicts` edges
 - conflict summaries
 - review routing recommendations
+- fossil notes for failed or contaminated branches
 
 May not create:
 
 - merged compromise claims
 - silent reconciliations
+- automatic error labels for contradiction
 
 Hard rule: contradictions are preserved until explicitly resolved or scoped.
 
@@ -172,6 +200,25 @@ Hard rule: agents propose graph writes; Human-root promotes.
 
 ---
 
+## Geometry alignment
+
+Graph packets should carry optional geometry coordinates when known:
+
+```yaml
+geometry:
+  metatrons_cube_node:
+  hypercube_coordinate: [null, null, null]
+  rainbow_yin_yang_polarity:
+  riemass_s_curve_position:
+  house_12x12:
+  sphere_12x12:
+  review_lane:
+```
+
+Geometry fields are organizing coordinates, not proof and not authority. They help later synthesis align knowledge domains, material properties, frequency ranges, states of matter, isotopes, elements, spin rates, acoustics, color harmonics, archive lineage, release paths, and review lanes.
+
+---
+
 ## Structured output packet
 
 Every extraction pass should produce a strict JSON/YAML packet shaped like:
@@ -188,6 +235,7 @@ graph_write_candidate:
   source_uri_or_path:
   raw_export_status:
   receipt_status:
+  doctrine_binding: "CANONICAL_GEOMETRY_MANY_VERSION_SYNTHESIS_DOCTRINE_v0.1"
   nodes:
     - node_id:
       node_type:
@@ -199,6 +247,11 @@ graph_write_candidate:
       to:
       status:
       notes:
+  variants_preserved: []
+  fossils_preserved: []
+  geometry:
+    hypercube_coordinate: [null, null, null]
+    review_lane:
   risks:
     authority_risk:
     canon_drift_risk:
@@ -257,6 +310,12 @@ evals:
     goal: identify absent hashes, source manifests, IDs, commits, paths
   contradiction_preservation:
     goal: preserve conflicts rather than smoothing them away
+  fossil_preservation:
+    goal: ensure failed branches and contaminated artifacts are retained as lineage where useful
+  single_source_collapse_detection:
+    goal: detect attempts to collapse many versions into one privileged source before review
+  geometry_coordinate_consistency:
+    goal: validate that optional geometry coordinates are labels, not proof claims
 ```
 
 ---
@@ -274,6 +333,8 @@ Do not treat retrieved chunks as ratified facts.
 Do not treat source presence as approval.
 Do not collapse contradictory claims into a blended summary.
 Do not write destructive changes without explicit current approval.
+Do not synthesize by erasing versions.
+Do not privilege one model, repo, document, vendor, or source during exploration.
 ```
 
 ---
@@ -292,6 +353,14 @@ The initial graph should support these early questions:
 8. Which artifacts reference real companies?
 9. Which artifacts lack source manifests?
 10. Which packet supersedes or patches another packet?
+
+Additional doctrine queries:
+
+11. Which versions are preserved as fossils rather than promoted?
+12. Which claims are contradictions but not errors?
+13. Which candidate artifacts share a geometry coordinate?
+14. Which artifacts are blocked from synthesis because review is incomplete?
+15. Which website-published artifacts are actually canon?
 
 ---
 
