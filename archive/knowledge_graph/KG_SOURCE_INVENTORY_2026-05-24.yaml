@@ -5,29 +5,40 @@
 
 inventory_version: "0.1"
 created_at: "2026-05-24"
-updated_at: "2026-05-24"
+updated_at: "2026-05-30"
 status: "seeded_not_canon"
 product_invariant: "memory != permission"
+doctrine_binding: "archive/knowledge_graph/CANONICAL_GEOMETRY_MANY_VERSION_SYNTHESIS_DOCTRINE_v0.1.md"
+working_phase_rule: "many versions before synthesis"
+canon_rule: "website-published after Human-root adjudication only"
 
 surfaces:
-  GitHub: "durable artifact / receipt substrate"
-  Drive: "raw and semi-raw document archive"
-  Notion: "legacy knowledge / structured workspace archive"
-  OpenAI: "extraction, graph-building, review, evals, and workflow layer"
+  GitHub: "durable artifact / receipt substrate, not canon by default"
+  Drive: "raw and semi-raw document archive, not canon by default"
+  Notion: "legacy knowledge / structured workspace archive, not canon by default"
+  OpenAI: "extraction, graph-building, review, evals, and workflow layer, not authority"
   HumanRoot: "final authority gate"
+  CanonicalWebsite: "only promoted canon surface"
 
 record_schema:
   source_id: "Stable local ID"
   title: "Artifact title"
-  surface: "GitHub | Drive | Notion | Unknown"
+  surface: "GitHub | Drive | Notion | Website | Unknown"
   url_or_path: "Resolvable URL/path or UNRESOLVED placeholder"
-  file_type: "markdown | yaml | pdf | transcript | pull_request | folder | unknown"
+  file_type: "markdown | yaml | pdf | transcript | pull_request | folder | website_page | unknown"
   raw_export_status: "present | missing | wrapper_only | unresolved"
   sha256_status: "present | missing | unresolved"
-  source_class: "raw | semi_raw | parsed | review | canon_candidate | legacy | wrapper | unknown"
+  source_class: "raw | semi_raw | parsed | review | canon_candidate | legacy | wrapper | fossil | website_canon | unknown"
   related_lane: "Rootglass | Lucerna | Hashlight | TIDELOCK | AtlasBrain | Sable Vesper | Morpheus Grok | Claude | General"
   review_priority: "P0 | P1 | P2 | P3"
   mirrored_to_github: "yes | no | partial | unresolved"
+  fossil_status: "active_candidate | fossil_preserved | failed_branch | contaminated_contains_delta | superseded_preserved | not_applicable"
+  synthesis_status: "not_synthesized | blocked_pending_review | candidate_delta_extracted | promoted_by_human_root | website_canon"
+  geometry:
+    metatrons_cube_node: "optional"
+    hypercube_coordinate: "optional [x, y, z]"
+    rainbow_yin_yang_polarity: "optional"
+    riemass_s_curve_position: "optional"
   missing_receipts: []
 
 records:
@@ -42,6 +53,13 @@ records:
     related_lane: "Rootglass"
     review_priority: "P0"
     mirrored_to_github: "unresolved"
+    fossil_status: "active_candidate"
+    synthesis_status: "blocked_pending_review"
+    geometry:
+      metatrons_cube_node: null
+      hypercube_coordinate: [null, null, null]
+      rainbow_yin_yang_polarity: null
+      riemass_s_curve_position: null
     missing_receipts: ["drive_file_id", "sha256", "github_mirror_path", "ratification_decision"]
 
   - source_id: "KG-SRC-0002"
@@ -55,6 +73,13 @@ records:
     related_lane: "Lucerna"
     review_priority: "P0"
     mirrored_to_github: "unresolved"
+    fossil_status: "active_candidate"
+    synthesis_status: "blocked_pending_review"
+    geometry:
+      metatrons_cube_node: null
+      hypercube_coordinate: [null, null, null]
+      rainbow_yin_yang_polarity: null
+      riemass_s_curve_position: null
     missing_receipts: ["drive_file_id", "sha256", "undefined_inv_clm_scan", "github_mirror_path"]
 
   - source_id: "KG-SRC-0003"
@@ -68,6 +93,13 @@ records:
     related_lane: "Rootglass"
     review_priority: "P1"
     mirrored_to_github: "unresolved"
+    fossil_status: "active_candidate"
+    synthesis_status: "blocked_pending_review"
+    geometry:
+      metatrons_cube_node: null
+      hypercube_coordinate: [null, null, null]
+      rainbow_yin_yang_polarity: null
+      riemass_s_curve_position: null
     missing_receipts: ["drive_file_id", "sha256", "template_version", "github_mirror_path"]
 
   - source_id: "KG-SRC-0004"
@@ -81,6 +113,13 @@ records:
     related_lane: "Hashlight"
     review_priority: "P0"
     mirrored_to_github: "unresolved"
+    fossil_status: "active_candidate"
+    synthesis_status: "blocked_pending_review"
+    geometry:
+      metatrons_cube_node: null
+      hypercube_coordinate: [null, null, null]
+      rainbow_yin_yang_polarity: null
+      riemass_s_curve_position: null
     missing_receipts: ["raw_export_hash", "source_manifest", "github_mirror_path"]
 
   - source_id: "KG-SRC-0005"
@@ -94,6 +133,13 @@ records:
     related_lane: "Hashlight"
     review_priority: "P0"
     mirrored_to_github: "unresolved"
+    fossil_status: "active_candidate"
+    synthesis_status: "blocked_pending_review"
+    geometry:
+      metatrons_cube_node: null
+      hypercube_coordinate: [null, null, null]
+      rainbow_yin_yang_polarity: null
+      riemass_s_curve_position: null
     missing_receipts: ["sha256", "source_manifest", "github_mirror_path"]
 
   - source_id: "KG-SRC-0006"
@@ -107,6 +153,13 @@ records:
     related_lane: "Lucerna"
     review_priority: "P1"
     mirrored_to_github: "unresolved"
+    fossil_status: "active_candidate"
+    synthesis_status: "blocked_pending_review"
+    geometry:
+      metatrons_cube_node: null
+      hypercube_coordinate: [null, null, null]
+      rainbow_yin_yang_polarity: null
+      riemass_s_curve_position: null
     missing_receipts: ["file_list", "drive_file_ids", "sha256_manifest", "github_mirror_path"]
 
   - source_id: "KG-SRC-0007"
@@ -120,6 +173,13 @@ records:
     related_lane: "TIDELOCK"
     review_priority: "P1"
     mirrored_to_github: "unresolved"
+    fossil_status: "active_candidate"
+    synthesis_status: "blocked_pending_review"
+    geometry:
+      metatrons_cube_node: null
+      hypercube_coordinate: [null, null, null]
+      rainbow_yin_yang_polarity: null
+      riemass_s_curve_position: null
     missing_receipts: ["drive_file_id", "sha256", "source_inputs", "github_mirror_path"]
 
   - source_id: "KG-SRC-0008"
@@ -133,6 +193,13 @@ records:
     related_lane: "Sable Vesper"
     review_priority: "P0"
     mirrored_to_github: "unresolved"
+    fossil_status: "active_candidate"
+    synthesis_status: "blocked_pending_review"
+    geometry:
+      metatrons_cube_node: null
+      hypercube_coordinate: [null, null, null]
+      rainbow_yin_yang_polarity: null
+      riemass_s_curve_position: null
     missing_receipts: ["pdf_file_list", "sha256_manifest", "text_extraction_manifest", "github_mirror_path"]
 
   - source_id: "KG-SRC-0009"
@@ -146,6 +213,13 @@ records:
     related_lane: "Rootglass"
     review_priority: "P0"
     mirrored_to_github: "yes"
+    fossil_status: "active_candidate"
+    synthesis_status: "blocked_pending_review"
+    geometry:
+      metatrons_cube_node: null
+      hypercube_coordinate: [null, null, null]
+      rainbow_yin_yang_polarity: null
+      riemass_s_curve_position: null
     missing_receipts: ["repo_full_name", "pr_url", "head_commit_sha", "review_decision"]
 
   - source_id: "KG-SRC-0010"
@@ -159,6 +233,13 @@ records:
     related_lane: "AtlasBrain"
     review_priority: "P0"
     mirrored_to_github: "yes"
+    fossil_status: "active_candidate"
+    synthesis_status: "blocked_pending_review"
+    geometry:
+      metatrons_cube_node: null
+      hypercube_coordinate: [null, null, null]
+      rainbow_yin_yang_polarity: null
+      riemass_s_curve_position: null
     missing_receipts: ["repo_full_name", "pr_url", "head_commit_sha", "raw_transcript_pointer", "full_raw_export"]
 
   - source_id: "KG-SRC-0011"
@@ -172,6 +253,13 @@ records:
     related_lane: "Sable Vesper"
     review_priority: "P0"
     mirrored_to_github: "yes"
+    fossil_status: "active_candidate"
+    synthesis_status: "blocked_pending_review"
+    geometry:
+      metatrons_cube_node: null
+      hypercube_coordinate: [null, null, null]
+      rainbow_yin_yang_polarity: null
+      riemass_s_curve_position: null
     missing_receipts: ["repo_path", "commit_sha", "sha256", "formal_review_status"]
 
   - source_id: "KG-SRC-0012"
@@ -185,9 +273,36 @@ records:
     related_lane: "General"
     review_priority: "P2"
     mirrored_to_github: "no"
+    fossil_status: "active_candidate"
+    synthesis_status: "blocked_pending_review"
+    geometry:
+      metatrons_cube_node: null
+      hypercube_coordinate: [null, null, null]
+      rainbow_yin_yang_polarity: null
+      riemass_s_curve_position: null
     missing_receipts: ["notion_page_ids", "export_manifest", "sha256_manifest", "github_mirror_path"]
 
-first_10_queries_to_support:
+  - source_id: "KG-SRC-0013"
+    title: "Canonical Geometry and Many-Version Synthesis Doctrine v0.1"
+    surface: "GitHub"
+    url_or_path: "archive/knowledge_graph/CANONICAL_GEOMETRY_MANY_VERSION_SYNTHESIS_DOCTRINE_v0.1.md"
+    file_type: "markdown"
+    raw_export_status: "present"
+    sha256_status: "unresolved"
+    source_class: "canon_candidate"
+    related_lane: "Rootglass"
+    review_priority: "P0"
+    mirrored_to_github: "yes"
+    fossil_status: "active_candidate"
+    synthesis_status: "blocked_pending_review"
+    geometry:
+      metatrons_cube_node: "doctrine/root"
+      hypercube_coordinate: [12, 12, 12]
+      rainbow_yin_yang_polarity: "integration"
+      riemass_s_curve_position: "spine"
+    missing_receipts: ["sha256", "Pantheon review", "Human-root website promotion decision"]
+
+first_queries_to_support:
   - "What artifacts mention GangaSeek?"
   - "Which GangaSeek INV/CLM IDs are undefined?"
   - "Which Drive artifacts are not mirrored to GitHub?"
@@ -198,6 +313,11 @@ first_10_queries_to_support:
   - "Which artifacts reference real companies?"
   - "Which artifacts lack source manifests?"
   - "Which packet supersedes or patches another packet?"
+  - "Which versions are preserved as fossils rather than promoted?"
+  - "Which claims are contradictions but not errors?"
+  - "Which candidate artifacts share a geometry coordinate?"
+  - "Which artifacts are blocked from synthesis because review is incomplete?"
+  - "Which website-published artifacts are actually canon?"
 
 next_required_actions:
   - "Resolve real Drive file IDs and URLs."
@@ -205,3 +325,6 @@ next_required_actions:
   - "Export SHA-256 manifest for every raw or semi-raw artifact."
   - "Mirror Drive raw cargo into GitHub receipt paths where appropriate."
   - "Run first structured extraction pass into ParsedPacket candidates."
+  - "Assign geometry coordinates only as organizing labels, not proof."
+  - "Preserve fossils before synthesis."
+  - "Block single-source collapse during exploration."
