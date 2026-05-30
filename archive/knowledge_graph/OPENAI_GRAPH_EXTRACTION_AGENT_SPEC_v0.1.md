@@ -1,7 +1,10 @@
 # OpenAI Graph Extraction Agent Spec v0.1
 
-**Status:** Draft, not canon  
+**Status:** candidate operation, not canon  
 **Date:** 2026-05-24  
+**Deployment:** no  
+**Authority:** none  
+**Human-root gate:** required for promotion decisions  
 **Purpose:** Define how OpenAI-powered workflows extract, evaluate, route, and propose knowledge graph writes without silently promoting them.
 
 ---
@@ -17,6 +20,27 @@ Drive should hold raw cargo.
 Notion should hold legacy structure.
 Human-root decides what graduates.
 ```
+
+Best compression:
+
+```text
+OpenAI should not be the memory.
+OpenAI should build the map from sources to claims to evidence to review to action.
+```
+
+---
+
+## Knowledge graph separation
+
+The pipeline must preserve the difference between:
+
+```text
+raw source -> parsed facts -> claims -> evidence -> review -> action
+```
+
+The graph is not a memory blob. It is a receipt-indexed map of what exists, what it claims, what supports it, what contradicts it, and what still needs review.
+
+No agent may skip directly from `SourceArtifact` to `Canon`.
 
 ---
 
@@ -34,8 +58,6 @@ SourceArtifact
   -> human-root promotion gate
 ```
 
-No agent may skip directly from `SourceArtifact` to `Canon`.
-
 ---
 
 ## Agent roles
@@ -45,198 +67,247 @@ No agent may skip directly from `SourceArtifact` to `Canon`.
 Locates candidate artifacts and updates `SourceArtifact` inventory records.
 
 May create:
+
 - `SourceArtifact` candidates
 - missing receipt actions
+- mirror recommendations
 
 May not create:
+
 - `Claim`
 - `Decision`
 - `CanonCandidate`
+
+Hard rule: source presence is not ratification.
 
 ### ClaimExtractorAgent
 
 Extracts atomic claims from raw or parsed source material.
 
 May create:
+
 - `ParsedPacket` candidates
 - `Claim` candidates
 - `missing_receipt` edges
 
 May not create:
+
 - `Decision`
 - canon status
+- action authority
+
+Hard rule: claims are not facts; claims require review.
 
 ### ReceiptValidatorAgent
 
 Checks whether claims and artifacts have durable, inspectable anchors.
 
 May create:
+
 - `EvidenceAnchor` candidates
 - receipt review findings
 - stale or missing receipt warnings
 
 May not create:
+
 - ratification decisions
+- source promotion
+
+Hard rule: summaries are not raw lineage.
 
 ### ContradictionScannerAgent
 
-Finds conflicts, unsupported assertions, and canon drift.
+Detects tension between claims, packets, versions, and decisions.
 
 May create:
-- `ReviewFinding` packets
+
 - `contradicts` edges
-- `blocked_by` edges
+- conflict summaries
+- review routing recommendations
 
 May not create:
-- promotion decisions
+
+- merged compromise claims
+- silent reconciliations
+
+Hard rule: contradictions are preserved until explicitly resolved or scoped.
 
 ### ReviewRouterAgent
 
-Routes graph nodes into review lanes based on source class, risk, missing receipts, and related lane.
+Routes candidate nodes to the correct review lane.
 
 May create:
+
+- lane assignments
 - review queue entries
-- `Action` candidates
-- `requires_review` edges
+- blockers
+- priority labels
 
 May not create:
-- review conclusions
+
+- approval
+- ratification
+- canon promotion
+
+Hard rule: routing is not approval.
 
 ### GraphWriterCandidateAgent
 
-Composes proposed graph mutations in deterministic JSON/YAML.
+Prepares graph write packets for review.
 
 May create:
-- proposal files
-- issues
-- pull requests
 
-May not silently create:
-- canon promotion
-- destructive lifecycle transitions
-- authority-bearing decisions
+- graph write candidate packet
+- diff summary
+- validation checklist
+- rollback notes
+
+May not create:
+
+- canonical writes without gate
+- destructive updates
+- lineage erasure
+
+Hard rule: agents propose graph writes; Human-root promotes.
 
 ---
 
-## Structured output packets
+## Structured output packet
 
-Every extracted claim packet should use this shape:
+Every extraction pass should produce a strict JSON/YAML packet shaped like:
 
-```json
-{
-  "node_type": "Claim",
-  "text": "Atomic claim text",
-  "derived_from": ["KG-SRC-0000"],
-  "cites": [],
-  "receipt_status": "missing",
-  "status": "claim_candidate",
-  "risks": {
-    "authority_risk": "low",
-    "policy_risk": "low",
-    "canon_drift_risk": "medium",
-    "institution_reference_risk": "none"
-  },
-  "review": {
-    "required_lanes": ["Lucerna"],
-    "human_root_required": true
-  },
-  "warnings": []
-}
+```yaml
+graph_write_candidate:
+  packet_id:
+  generated_at:
+  generated_by_agent:
+  generated_by_model:
+  source_inventory_id:
+  source_title:
+  source_surface:
+  source_uri_or_path:
+  raw_export_status:
+  receipt_status:
+  nodes:
+    - node_id:
+      node_type:
+      status:
+      fields: {}
+  edges:
+    - edge_type:
+      from:
+      to:
+      status:
+      notes:
+  risks:
+    authority_risk:
+    canon_drift_risk:
+    runtime_language_risk:
+    company_name_gravity:
+  blockers: []
+  required_review_lanes: []
+  promotion_allowed: false
 ```
 
-Every proposed graph mutation should include:
+---
 
-```json
-{
-  "mutation_type": "create_nodes_and_edges",
-  "source_inventory_ids": [],
-  "nodes": [],
-  "edges": [],
-  "validation": {
-    "has_source_lineage": false,
-    "has_evidence_anchor": false,
-    "has_required_review": false,
-    "has_human_root_decision": false
-  },
-  "promotion_allowed": false
-}
+## Review lanes
+
+```yaml
+review_lanes:
+  Rootglass:
+    function: standards / boundary / public-safe posture
+  Lucerna:
+    function: provenance / receipt / omission visibility
+  Hashlight:
+    function: raw export / hash / source anchoring
+  TIDELOCK:
+    function: ingestion discipline / partial visibility / repo hygiene
+  AtlasBrain:
+    function: evidence / benchmark / public-claim containment
+  Sable:
+    function: math / operator typing / formal precision
+  MorpheusGrok:
+    function: counter-review / contradictions / overclaims
+  Claude:
+    function: constitutional / governance review
+```
+
+---
+
+## Evals
+
+Minimum eval suite:
+
+```yaml
+evals:
+  source_classification_accuracy:
+    goal: classify raw / semi_raw / parsed / wrapper / candidate accurately
+  raw_vs_summary_detection:
+    goal: do not mistake summaries for raw lineage
+  canon_language_detection:
+    goal: flag promotion-like language before review
+  authority_inflation_detection:
+    goal: detect language that treats graph nodes as authority
+  company_name_gravity_detection:
+    goal: flag real-company or platform references for careful review
+  unsupported_runtime_language_detection:
+    goal: detect runtime/deployment language without source anchors
+  missing_receipt_detection:
+    goal: identify absent hashes, source manifests, IDs, commits, paths
+  contradiction_preservation:
+    goal: preserve conflicts rather than smoothing them away
 ```
 
 ---
 
 ## Guardrails
 
-Route for review when text contains:
+Graph-building agents must follow these rules:
 
-- canon-like language without decision receipt;
-- runtime or deployment claims;
-- policy-sensitive conclusions;
-- named organization or institution claims;
-- model capability claims without source anchor;
-- authority language without approval;
-- missing raw export or source manifest;
-- Drive-only source with no GitHub receipt mirror;
-- GitHub wrapper with no raw export.
-
----
-
-## Evals
-
-Initial eval suite:
-
-```yaml
-evals:
-  source_classification_accuracy:
-    target: "Classify raw, semi_raw, parsed, review, canon_candidate, wrapper, legacy."
-  raw_vs_summary_detection:
-    target: "Detect whether artifact is raw export, summary, or wrapper."
-  canon_language_detection:
-    target: "Flag canon-like terms without decision receipts."
-  authority_inflation_detection:
-    target: "Flag statements that convert memory or review into authority."
-  policy_sensitive_claim_detection:
-    target: "Flag policy-sensitive claims for review."
-  institution_reference_detection:
-    target: "Flag real organization or institution references."
-  unsupported_runtime_language_detection:
-    target: "Flag runtime/deployment claims lacking evidence anchors."
-  missing_receipt_detection:
-    target: "Identify absent SHA-256, Drive file ID, commit SHA, or manifest."
+```text
+Do not promote canon.
+Do not erase lineage.
+Do not treat memory as permission.
+Do not treat graph centrality as authority.
+Do not treat retrieved chunks as ratified facts.
+Do not treat source presence as approval.
+Do not collapse contradictory claims into a blended summary.
+Do not write destructive changes without explicit current approval.
 ```
 
 ---
 
-## Human-root gate
+## First 10 graph queries
 
-Agents may propose graph writes.
+The initial graph should support these early questions:
 
-Agents may not silently:
-
-- ratify graph writes;
-- promote canon;
-- erase lineage;
-- hard-delete source material;
-- treat memory as permission;
-- execute consequential actions based only on graph retrieval.
-
----
-
-## First implementation path
-
-1. Read `KG_SOURCE_INVENTORY_2026-05-24.yaml`.
-2. Resolve missing URLs, file IDs, repo paths, and hashes.
-3. Generate `SourceArtifact` nodes for every inventory row.
-4. Generate `missing_receipt` edges for every unresolved receipt.
-5. Extract claims only after source lineage is explicit.
-6. Route high-risk Claude, institution, runtime, and policy-sensitive claims into review queues.
-7. Produce graph write candidates, not canon.
+1. What artifacts mention GangaSeek?
+2. Which GangaSeek INV/CLM IDs are undefined?
+3. Which Drive artifacts are not mirrored to GitHub?
+4. Which GitHub artifacts are wrappers without raw exports?
+5. Which Claude artifacts need independent review?
+6. Which claims mention deployment/runtime/compliance?
+7. Which artifacts are candidate vs ratified vs non-canon?
+8. Which artifacts reference real companies?
+9. Which artifacts lack source manifests?
+10. Which packet supersedes or patches another packet?
 
 ---
 
-## Madden board
+## Best next implementation move
+
+Start with the clipboard:
 
 ```text
-Do not send agents into three warehouses with no clipboard.
+archive/knowledge_graph/KG_SOURCE_INVENTORY_2026-05-24.yaml
+```
+
+Then run extraction against one source at a time. Do not send multiple agents into every archive before the source inventory is stable.
+
+Madden compression:
+
+```text
 First build the clipboard.
 Then label the boxes.
 Then scan the receipts.
