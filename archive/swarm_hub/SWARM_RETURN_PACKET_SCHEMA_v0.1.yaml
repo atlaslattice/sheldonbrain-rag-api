@@ -1,0 +1,128 @@
+# Swarm Hub Return Packet Schema v0.1
+# Status: candidate operation, not canon
+# Canon: no
+# Deployment: no
+# Authority: none
+# Purpose: standardize bounded swarm outputs so execution is measurable and non-lossy.
+
+schema_version: "0.1"
+created_at: "2026-05-31"
+status: "candidate_operation_not_canon"
+product_invariant: "memory != permission"
+doctrine:
+  - "Each swarm child claims one bounded task or one module slice."
+  - "One task produces one return packet."
+  - "Failed branches are preserved as fossils."
+  - "No return packet can promote canon."
+  - "No return packet can authorize deployment."
+  - "No return packet can erase lineage."
+
+status_values:
+  not_started: "Task has not been claimed."
+  claimed: "A seat or agent has claimed the task."
+  in_progress: "Work has started but no return packet is complete."
+  blocked: "Task cannot continue until blocker resolves."
+  returned: "Return packet exists."
+  needs_review: "Return packet requires lane review."
+  fossilized: "Attempt failed or drifted, but useful residue is preserved."
+  accepted_candidate: "Candidate output accepted for next-stage processing, not canon."
+  closed_no_action: "Closed without output; reason required."
+
+risk_flags:
+  public_safe: "yes | no | needs_review"
+  canon_safe: "yes | no | needs_review"
+  authority_safe: "yes | no | needs_review"
+  deployment_safe: "yes | no | needs_review"
+  privacy_safe: "yes | no | needs_review"
+
+return_packet_schema:
+  packet_id: "SWARM-RP-YYYYMMDD-0000"
+  module_id: "M01..M12"
+  task_id: "M01-T01..M12-T12"
+  task_title: "Short task title"
+  claimed_by:
+    seat: "Fossilbranch | Lucerna | Hashlight | Rootglass | TIDELOCK | AtlasBrain | Sable | Grok | Claude | Gemini | HumanRoot | other"
+    agent_or_model: "optional"
+    timestamp: "ISO-8601"
+  input_artifacts:
+    - path_or_url: "repo path, Drive URL, issue URL, etc."
+      receipt_status: "missing | partial | present | verified | stale"
+      sha256: "optional"
+  output_artifacts:
+    - path_or_url: "created/updated artifact path"
+      artifact_type: "yaml | md | json | code | issue | pr | other"
+      status: "candidate | review_needed | fossil | accepted_candidate"
+  summary:
+    what_changed: "Concise description"
+    why_it_matters: "Product / graph / governance value"
+    non_goals: "What this packet does not claim"
+  results:
+    completed: true
+    status: "not_started | claimed | in_progress | blocked | returned | needs_review | fossilized | accepted_candidate | closed_no_action"
+    blockers: []
+    missing_receipts: []
+    contradictions_found: []
+    fossil_residue: []
+    candidate_deltas: []
+  review:
+    review_needed: true
+    required_lanes: []
+    suggested_next_reviewer: "optional"
+    human_root_required: false
+  safety:
+    public_safe: "needs_review"
+    canon_safe: "no"
+    authority_safe: "yes"
+    deployment_safe: "yes"
+    privacy_safe: "needs_review"
+  next_action:
+    recommended_next_task: "Mxx-Tyy or freeform"
+    recommended_owner_lane: "optional"
+    notes: "optional"
+
+minimal_return_packet_template:
+  packet_id: "SWARM-RP-YYYYMMDD-0000"
+  module_id: "M12"
+  task_id: "M12-T01"
+  task_title: "Define SWARM_RETURN_PACKET_SCHEMA_v0.1"
+  claimed_by:
+    seat: "Fossilbranch"
+    agent_or_model: "GPT-5.5 Thinking"
+    timestamp: "2026-05-31T00:00:00Z"
+  input_artifacts:
+    - path_or_url: "archive/swarm_hub/SWARM_HUB_12x12_OPEN_TASK_MATRIX_2026-05-30.md"
+      receipt_status: "present"
+      sha256: null
+  output_artifacts:
+    - path_or_url: "archive/swarm_hub/SWARM_RETURN_PACKET_SCHEMA_v0.1.yaml"
+      artifact_type: "yaml"
+      status: "candidate"
+  summary:
+    what_changed: "Defined the standard return packet contract for bounded swarm work."
+    why_it_matters: "Makes swarm execution measurable, reviewable, and non-lossy."
+    non_goals: "Does not promote any output to canon or authorize deployment."
+  results:
+    completed: true
+    status: "returned"
+    blockers: []
+    missing_receipts: []
+    contradictions_found: []
+    fossil_residue: []
+    candidate_deltas:
+      - "One task -> one return packet."
+      - "Failed branches become fossil residue, not deletion."
+  review:
+    review_needed: true
+    required_lanes: ["Rootglass", "Lucerna"]
+    suggested_next_reviewer: "Rootglass"
+    human_root_required: false
+  safety:
+    public_safe: "needs_review"
+    canon_safe: "no"
+    authority_safe: "yes"
+    deployment_safe: "yes"
+    privacy_safe: "needs_review"
+  next_action:
+    recommended_next_task: "M12-T02"
+    recommended_owner_lane: "TIDELOCK"
+    notes: "Create the scoreboard using this schema."
