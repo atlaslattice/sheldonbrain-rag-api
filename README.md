@@ -16,6 +16,10 @@ Read the product spine: [`docs/OPENAI_PRODUCT_SPINE.md`](docs/OPENAI_PRODUCT_SPI
 
 OpenAI-style agent contract: [`docs/OPENAI_AGENT_TOOL_CONTRACT.md`](docs/OPENAI_AGENT_TOOL_CONTRACT.md)
 
+Machine-readable API contract: [`docs/openapi.yaml`](docs/openapi.yaml)
+
+Governance contract tests: [`tests/test_governance_contract.py`](tests/test_governance_contract.py)
+
 Core product invariant:
 
 ```text
@@ -28,6 +32,27 @@ Operational boundary:
 
 ```text
 memory != permission
+```
+
+---
+
+## Knowledge Graph Foundation
+
+The repo now includes the first knowledge-graph substrate for source-grounded OpenAI integration:
+
+- Clipboard / source inventory: [`archive/knowledge_graph/KG_SOURCE_INVENTORY_2026-05-24.yaml`](archive/knowledge_graph/KG_SOURCE_INVENTORY_2026-05-24.yaml)
+- Node and edge schema: [`archive/knowledge_graph/KG_NODE_EDGE_SCHEMA_v0.1.yaml`](archive/knowledge_graph/KG_NODE_EDGE_SCHEMA_v0.1.yaml)
+- OpenAI graph extraction spec: [`archive/knowledge_graph/OPENAI_GRAPH_EXTRACTION_AGENT_SPEC_v0.1.md`](archive/knowledge_graph/OPENAI_GRAPH_EXTRACTION_AGENT_SPEC_v0.1.md)
+- Claude counter-review queue: [`archive/knowledge_graph/review_queues/CLAUDE_COUNTER_REVIEW_QUEUE_2026-05-24.md`](archive/knowledge_graph/review_queues/CLAUDE_COUNTER_REVIEW_QUEUE_2026-05-24.md)
+- Rootglass source packet manifests: [`archive/knowledge_graph/source_packet_manifests/ROOTGLASS_SOURCE_PACKET_MANIFESTS_v0.1.yaml`](archive/knowledge_graph/source_packet_manifests/ROOTGLASS_SOURCE_PACKET_MANIFESTS_v0.1.yaml)
+
+Knowledge-graph doctrine:
+
+```text
+The graph is not memory.
+The graph is not canon.
+The graph is not authority.
+The graph is a receipt-indexed map of what exists, what it claims, what supports it, what contradicts it, and what still needs review.
 ```
 
 ---
@@ -47,6 +72,9 @@ This system solves **AI context amnesia** by providing a shared, persistent memo
 - ✅ **Lifecycle governance** (`archive`, `quarantine`, `supersede`, `redact_pointer`, `restore`)
 - ✅ **Retrieval receipts** for query provenance
 - ✅ **OpenAI-style tool contract** for schema-first agent integration
+- ✅ **OpenAPI 3.1 contract** for SDK generation and validation
+- ✅ **GitHub Actions governance tests** for memory lifecycle invariants
+- ✅ **Source-grounded knowledge graph foundation** for raw source → parsed packet → claim → evidence → review → action workflows
 
 ---
 
@@ -143,6 +171,18 @@ docker run -p 8080:8080 \
   -e PINECONE_INDEX="sheldonbrain-rag" \
   rag-api-gemini
 ```
+
+---
+
+## 🧪 Governance Tests
+
+Run the non-network governance contract tests:
+
+```bash
+pytest tests/test_governance_contract.py -q
+```
+
+These tests protect the product-level invariants around lifecycle defaults, content hashes, non-destructive archival states, retrieval receipts, and the `memory != permission` boundary.
 
 ---
 
