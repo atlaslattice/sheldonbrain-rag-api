@@ -1,0 +1,234 @@
+# Toy Graph Batch 001
+# Date: 2026-05-31
+# Status: candidate demo graph, not canon
+# Source inputs:
+#   - archive/knowledge_graph/KG_SOURCE_INVENTORY_2026-05-24.yaml
+#   - archive/knowledge_graph/ledgers/MISSING_RECEIPTS_LEDGER_2026-05-31.yaml
+# Doctrine: graph edge is not promotion; placeholder evidence is not proof.
+
+graph_id: "TOY-GRAPH-BATCH-001"
+created_at: "2026-05-31"
+status: "candidate_demo_not_canon"
+canon: false
+deployment: false
+authority: none
+product_invariant: "memory != permission"
+
+purpose: >-
+  Demonstrate raw source -> claim -> evidence -> review routing using a tiny,
+  inspectable subset of the knowledge graph before scaling ingestion.
+
+source_inventory:
+  path: "archive/knowledge_graph/KG_SOURCE_INVENTORY_2026-05-24.yaml"
+missing_receipts_ledger:
+  path: "archive/knowledge_graph/ledgers/MISSING_RECEIPTS_LEDGER_2026-05-31.yaml"
+
+selected_sources:
+  - "KG-SRC-0001"  # GangaSeek Namespace Ratification Packet
+  - "KG-SRC-0002"  # GangaSeek INV/CLM Catalog
+  - "KG-SRC-0005"  # RAW TRANSCRIPT NOT CANON.md
+
+nodes:
+  - node_id: "KG-NODE-0001"
+    node_type: "SourceArtifact"
+    source_inventory_id: "KG-SRC-0001"
+    title: "GangaSeek Namespace Ratification Packet"
+    surface: "Drive"
+    status: "review_pending"
+    receipt_status: "missing"
+    source_class: "canon_candidate"
+    related_lane: "Rootglass"
+    canon_status: "not_canon"
+    authority_status: "none"
+    notes: "Seeded source artifact; Drive ID, hash, mirror path, and Human-root decision unresolved."
+
+  - node_id: "KG-NODE-0002"
+    node_type: "SourceArtifact"
+    source_inventory_id: "KG-SRC-0002"
+    title: "GangaSeek INV/CLM Catalog"
+    surface: "Drive"
+    status: "review_pending"
+    receipt_status: "missing"
+    source_class: "canon_candidate"
+    related_lane: "Lucerna"
+    canon_status: "not_canon"
+    authority_status: "none"
+    notes: "Seeded source artifact; undefined INV/CLM scan unresolved."
+
+  - node_id: "KG-NODE-0003"
+    node_type: "SourceArtifact"
+    source_inventory_id: "KG-SRC-0005"
+    title: "RAW TRANSCRIPT NOT CANON.md"
+    surface: "Drive"
+    status: "raw"
+    receipt_status: "partial"
+    source_class: "raw"
+    related_lane: "Hashlight"
+    canon_status: "not_canon"
+    authority_status: "none"
+    notes: "Raw export is marked present in inventory, but hash/source manifest/mirror remain unresolved."
+
+  - node_id: "KG-NODE-0004"
+    node_type: "Claim"
+    text: "The GangaSeek namespace packet is a canon candidate, not canon."
+    derived_from: "KG-NODE-0001"
+    status: "claim_candidate"
+    receipt_status: "partial"
+    risks:
+      authority_risk: "medium"
+      canon_drift_risk: "high"
+      runtime_language_risk: "low"
+      company_name_gravity: "medium"
+    review:
+      required_lanes: ["Rootglass", "Lucerna"]
+      status: "review_pending"
+
+  - node_id: "KG-NODE-0005"
+    node_type: "Claim"
+    text: "The INV/CLM Catalog requires an undefined-ID scan before claim extraction or public-candidate use."
+    derived_from: "KG-NODE-0002"
+    status: "claim_candidate"
+    receipt_status: "partial"
+    risks:
+      authority_risk: "medium"
+      canon_drift_risk: "high"
+      runtime_language_risk: "medium"
+      company_name_gravity: "low"
+    review:
+      required_lanes: ["Sable_Vesper", "Lucerna"]
+      status: "review_pending"
+
+  - node_id: "KG-NODE-0006"
+    node_type: "Claim"
+    text: "RAW TRANSCRIPT NOT CANON.md may be used as raw lineage, but its content must not be treated as canon."
+    derived_from: "KG-NODE-0003"
+    status: "claim_candidate"
+    receipt_status: "partial"
+    risks:
+      authority_risk: "low"
+      canon_drift_risk: "medium"
+      runtime_language_risk: "low"
+      company_name_gravity: "none"
+    review:
+      required_lanes: ["Hashlight", "Lucerna"]
+      status: "review_pending"
+
+  - node_id: "KG-NODE-0007"
+    node_type: "EvidenceAnchor"
+    anchor_type: "missing_receipt_pointer"
+    value: "MR-20260531-0001"
+    supports_or_locates: "KG-NODE-0001"
+    receipt_status: "missing"
+    owner_lane: "Lucerna"
+    notes: "Drive file ID unresolved."
+
+  - node_id: "KG-NODE-0008"
+    node_type: "EvidenceAnchor"
+    anchor_type: "missing_receipt_pointer"
+    value: "MR-20260531-0004"
+    supports_or_locates: "KG-NODE-0002"
+    receipt_status: "missing"
+    owner_lane: "Sable_Vesper"
+    notes: "Undefined INV/CLM scan unresolved."
+
+  - node_id: "KG-NODE-0009"
+    node_type: "EvidenceAnchor"
+    anchor_type: "missing_receipt_pointer"
+    value: "MR-20260531-0009"
+    supports_or_locates: "KG-NODE-0003"
+    receipt_status: "missing"
+    owner_lane: "Hashlight"
+    notes: "Raw transcript SHA-256 missing."
+
+  - node_id: "KG-NODE-0010"
+    node_type: "ReviewFinding"
+    reviewer_lane: "Rootglass"
+    finding_summary: "Namespace/ratification language is blocked from promotion until source anchors and Human-root decision are present."
+    reviews: "KG-NODE-0004"
+    decision_recommendation: "blocked_pending_receipts"
+    status: "review_pending"
+
+  - node_id: "KG-NODE-0011"
+    node_type: "Action"
+    action_type: "receipt_resolution"
+    description: "Resolve Drive file IDs and SHA-256 anchors for selected Batch 001 sources."
+    status: "proposed"
+    requires_human_approval: false
+    assigned_lane: "Lucerna"
+    created_from: ["KG-NODE-0007", "KG-NODE-0008", "KG-NODE-0009"]
+
+edges:
+  - edge_id: "KG-EDGE-0001"
+    edge_type: "derived_from"
+    from: "KG-NODE-0004"
+    to: "KG-NODE-0001"
+    status: "candidate"
+
+  - edge_id: "KG-EDGE-0002"
+    edge_type: "derived_from"
+    from: "KG-NODE-0005"
+    to: "KG-NODE-0002"
+    status: "candidate"
+
+  - edge_id: "KG-EDGE-0003"
+    edge_type: "derived_from"
+    from: "KG-NODE-0006"
+    to: "KG-NODE-0003"
+    status: "candidate"
+
+  - edge_id: "KG-EDGE-0004"
+    edge_type: "missing_receipt"
+    from: "KG-NODE-0001"
+    to: "KG-NODE-0007"
+    status: "open"
+
+  - edge_id: "KG-EDGE-0005"
+    edge_type: "missing_receipt"
+    from: "KG-NODE-0002"
+    to: "KG-NODE-0008"
+    status: "open"
+
+  - edge_id: "KG-EDGE-0006"
+    edge_type: "missing_receipt"
+    from: "KG-NODE-0003"
+    to: "KG-NODE-0009"
+    status: "open"
+
+  - edge_id: "KG-EDGE-0007"
+    edge_type: "requires_review"
+    from: "KG-NODE-0004"
+    to: "KG-NODE-0010"
+    status: "open"
+
+  - edge_id: "KG-EDGE-0008"
+    edge_type: "blocked_by"
+    from: "KG-NODE-0004"
+    to: "KG-NODE-0007"
+    status: "open"
+
+  - edge_id: "KG-EDGE-0009"
+    edge_type: "blocked_by"
+    from: "KG-NODE-0005"
+    to: "KG-NODE-0008"
+    status: "open"
+
+  - edge_id: "KG-EDGE-0010"
+    edge_type: "blocked_by"
+    from: "KG-NODE-0006"
+    to: "KG-NODE-0009"
+    status: "open"
+
+query_examples:
+  - query: "Which selected sources are blocked by missing receipts?"
+    answer_node_ids: ["KG-NODE-0001", "KG-NODE-0002", "KG-NODE-0003"]
+    answer_edge_ids: ["KG-EDGE-0004", "KG-EDGE-0005", "KG-EDGE-0006"]
+
+  - query: "Which claims are canon candidates but not canon?"
+    answer_node_ids: ["KG-NODE-0004", "KG-NODE-0005"]
+    note: "Claims inherit canon-candidate risk from source class but remain claim_candidate only."
+
+  - query: "What should Lucerna do next?"
+    answer_node_ids: ["KG-NODE-0011"]
+    note: "Resolve source identifiers and receipt anchors; do not promote canon."
+
+keeper: "This toy graph is a map of blockers and candidate claims. It is not truth, canon, or authority."
