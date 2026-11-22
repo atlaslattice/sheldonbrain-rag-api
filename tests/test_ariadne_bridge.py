@@ -36,6 +36,21 @@ class BridgeTests(unittest.TestCase):
     def test_malformed_source_digest(self):
         self.link["source_digest"]="not-a-digest"
         self.assertEqual(assess_link(self.link,self.index,"v1")["state"],"HOLD")
+    def test_rejected_receipt_withheld_by_default(self):
+        self.link["relation"]="NO_MATCH"
+        result=assess_link_with_receipt(self.link,self.index,"v1")
+        self.assertEqual(result["state"],"REJECTED_SEMANTIC_MATCH")
+        self.assertNotIn("source",result)
+    def test_rejected_receipt_host_gated(self):
+        self.link["relation"]="NO_MATCH"
+        result=assess_link_with_receipt(self.link,self.index,"v1",host_work_authorized=True)
+        self.assertEqual(result["source"]["source_uri"],self.link["source_uri"])
+        self.assertEqual(result["provenance"],"CALLER_DECLARED_NOT_ATTESTED")
+        self.assertEqual(result["source_commitment"],digest(result["source"]))
+    def test_invalid_source_stays_withheld(self):
+        self.link["source_digest"]="malformed"
+        result=assess_link_with_receipt(self.link,self.index,"v1",host_work_authorized=True)
+        self.assertNotIn("source",result)
     def test_no_authority(self):
         self.link.update(review_state="INDEPENDENTLY_ADJUDICATED",review_receipt="r",rights_at_release="allowed")
         self.assertEqual(assess_link(self.link,self.index,"v1")["authority_effect"],"NONE")
