@@ -6,7 +6,7 @@ Ariadne source authenticity, host identity, CANON or semantic approval.
 import copy
 import unittest
 
-from tools.ariadne_bridge import digest, verify_registry
+from tools.ariadne_bridge import digest, verify_registry, load_strict
 
 
 def fixture():
@@ -31,6 +31,27 @@ class TypedRegistryGateTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.original = fixture()
+
+    def test_json_overflow_underflow_and_roundoff_hold(self):
+        for literal in ("1e10000", "-1e10000", "1e-10000", "1e-4000",
+                        "1.2345678901234567890123456789"):
+            with self.subTest(number=literal):
+                with self.assertRaises(ValueError):
+                    load_strict('{"value":'+literal+'}')
+
+    def test_decimal_float_literal_controls(self):
+        for literal, expected in (("0.0", 0.0), ("0e-9999", 0.0),
+                                  ("1.5e2", 150.0), ("2.5", 2.5),
+                                  ("5e-324", 5e-324)):
+            with self.subTest(number=literal):
+                self.assertEqual(load_strict('{"value":'+literal+'}')["value"],
+                                 expected)
+
+    def test_nonfinite_constant_rejected(self):
+        for constant in ("NaN", "Infinity", "-Infinity"):
+            with self.subTest(number=constant):
+                with self.assertRaises(ValueError):
+                    load_strict('{"value":'+constant+'}')
 
     def test_positive_structure_not_external_attestation(self):
         data = copy.deepcopy(self.original)
