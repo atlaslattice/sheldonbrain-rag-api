@@ -14,6 +14,7 @@ from typing import Any
 
 EDITION = "0.1.0"
 LIMIT = 100
+MAX_MANIFEST_BYTES = 1_048_576
 OPAQUE = re.compile(r"^[A-Za-z0-9._:/-]{1,180}$")
 COORD = re.compile(r"^H(?:0[1-9]|1[0-2])\.S(?:0[1-9]|1[0-2])\.N(?:0[1-9]|1[0-2])$")
 FIELDS = frozenset({
@@ -43,7 +44,7 @@ def _opaque(value: Any) -> bool:
 
 
 def _score(value: Any) -> bool:
-    return type(value) in (float, int) and math.isfinite(value) and 0 <= value <= 1
+    return type(value) in (float, int) and 0 <= value <= 1 and math.isfinite(value)
 
 
 def validate_manifest(raw: bytes) -> dict[str, Any]:
@@ -52,12 +53,16 @@ def validate_manifest(raw: bytes) -> dict[str, Any]:
     def flag(code: str, index: int | None = None) -> None:
         errors.append({"index": index, "code": code})
 
-    try:
-        data = json.loads(raw.decode("utf-8"), object_pairs_hook=_unique_pairs,
-                          parse_constant=_reject_constant)
-    except (UnicodeError, ValueError, TypeError):
-        flag("INVALID_JSON_OR_DUPLICATE_KEY")
+    if len(raw) > MAX_MANIFEST_BYTES:
+        flag("MANIFEST_BYTES_EXCEEDED")
         data = None
+    else:
+        try:
+            data = json.loads(raw.decode("utf-8"), object_pairs_hook=_unique_pairs,
+                              parse_constant=_reject_constant)
+        except (UnicodeError, ValueError, TypeError, RecursionError, OverflowError):
+            flag("INVALID_JSON_OR_DUPLICATE_KEY")
+            data = None
     records: list[Any] = []
     if data is not None:
         if not isinstance(data, dict) or set(data) != {"schema_version", "records"} or data.get("schema_version") != EDITION:
@@ -90,9 +95,11 @@ def validate_manifest(raw: bytes) -> dict[str, Any]:
             seen.add(pair)
         if record.get("source_mode") != "work":
             flag("NON_WORK_SOURCE_MODE", index)
-        if record.get("source_kind") not in {"repository", "drive", "notion", "web", "synthetic", "other"}:
+        kind = record.get("source_kind")
+        if not isinstance(kind, str) or kind not in {"repository", "drive", "notion", "web", "synthetic", "other"}:
             flag("INVALID_SOURCE_KIND", index)
-        if record.get("visibility") not in {"public", "consented_work", "synthetic"}:
+        visibility = record.get("visibility")
+        if not isinstance(visibility, str) or visibility not in {"public", "consented_work", "synthetic"}:
             flag("VISIBILITY_HOLD", index)
         if record.get("rights_status") != "rights_reviewed":
             flag("RIGHTS_REVIEW_HOLD", index)
