@@ -43,6 +43,11 @@ def _opaque(value: Any) -> bool:
     return isinstance(value, str) and OPAQUE.fullmatch(value) is not None
 
 
+def _safe_source_locator(value: Any) -> bool:
+    """No source is fetched, but do not pass path-traversal segments onward."""
+    return _opaque(value) and all(part not in {".", ".."} for part in value.split("/"))
+
+
 def _score(value: Any) -> bool:
     return type(value) in (float, int) and 0 <= value <= 1 and math.isfinite(value)
 
@@ -87,6 +92,10 @@ def validate_manifest(raw: bytes) -> dict[str, Any]:
             "artifact_id", "revision_id", "source_revision", "source_locator",
             "rights_evidence_ref", "retention_policy"
         )):
+            flag("INVALID_OPAQUE_REFERENCE", index)
+        # A syntactically opaque locator can still contain ../ path traversal.
+        # Keep source content out of receipts, even when rejecting a locator.
+        if _opaque(record.get("source_locator")) and not _safe_source_locator(record["source_locator"]):
             flag("INVALID_OPAQUE_REFERENCE", index)
         pair = (record.get("artifact_id"), record.get("revision_id"))
         if all(isinstance(v, str) for v in pair):
