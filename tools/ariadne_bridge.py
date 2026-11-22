@@ -40,5 +40,25 @@ def assess_link(link,index,edition):
     if link.get("review_state")!="INDEPENDENTLY_ADJUDICATED": return {"state":"CANDIDATE","authority_effect":"NONE"}
     if not link.get("review_receipt") or not link.get("rights_at_release"): return {"state":"HOLD","reason":"review/rights"}
     return {"state":"REVIEWED_RELATION","authority_effect":"NONE","external_attestation":"NOT_PERFORMED"}
+def assess_link_with_receipt(link,index,edition,host_work_authorized=False):
+    """Optional Work-only receipt; never expose source metadata without host authorization.
+
+    Caller-supplied host_work_authorized is a test seam, NOT an authentication
+    mechanism. Production callers must bind this to a verified host principal,
+    current room, purpose, and rights-at-return before use.
+    """
+    result=assess_link(link,index,edition)
+    if host_work_authorized is not True:
+        return {"state":result["state"],"authority_effect":"NONE",
+                "provenance":"WITHHELD_UNVERIFIED_HOST"}
+    if result["state"] not in ("CANDIDATE","REJECTED_SEMANTIC_MATCH","REVIEWED_RELATION"):
+        return {"state":result["state"],"authority_effect":"NONE",
+                "provenance":"WITHHELD_INVALID_SOURCE"}
+    fields=("source_uri","source_version","source_digest","edition","coordinate","relation")
+    receipt={key:link[key] for key in fields}
+    return {"state":result["state"],"authority_effect":"NONE",
+            "provenance":"CALLER_DECLARED_NOT_ATTESTED",
+            "source":receipt,"source_commitment":digest(receipt)}
+
 def macroturn_plan():
     return {"Work":6,"Play":3,"Social":3,"Imagine":3,"Dream":3,"Quiet":2,"nonwork_state":"RESERVED_NOT_PERFORMED","execution_state":"PLANNED"}
