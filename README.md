@@ -38,6 +38,8 @@ memory != permission
 
 ## Knowledge Graph Foundation
 
+Public-only cross-repository source pointer: [Noosphere public registry bridge](docs/NOOSPHERE_PUBLIC_INDEX_SOURCE_BRIDGE_2026-11-22.md). **Metadata navigation only; no RAG data sync, host authorization, CANON, or deployment claim.**
+
 The repo now includes the first knowledge-graph substrate for source-grounded OpenAI integration:
 
 - Clipboard / source inventory: [`archive/knowledge_graph/KG_SOURCE_INVENTORY_2026-05-24.yaml`](archive/knowledge_graph/KG_SOURCE_INVENTORY_2026-05-24.yaml)
