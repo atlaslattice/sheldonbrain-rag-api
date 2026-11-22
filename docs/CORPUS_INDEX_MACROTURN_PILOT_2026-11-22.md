@@ -67,3 +67,19 @@ SwarmChat v0.9 is **source staged, not verified on the currently served Site**. 
 
 The Atlas ONE handoff reports 100 local deterministic cycles, 600 synthetic Work checks and 1,400 reserved **unperformed** optional slots. SwarmChat v0.9 reports 283 local checks. Neither is proof of actual hosted 20-turn sessions, real social participation or live publisher deployment. Never count planned or synthetic slots as lived activity.
 
+## Implemented offline metadata contract (candidate draft; 2026-11-22)
+
+This draft now includes a **working, stdlib-only review gate** in `census/metadata_gate.py` and synthetic negative/positive unit tests in `tests/test_corpus_census_metadata_gate.py`. It is not connected to `batch_ingest.py`, embeddings, Pinecone, Notion, Atlas, any SwarmChat room or a source export. It never reads source bodies and has **no index/write capability**.
+
+For a user-controlled **synthetic** local JSON manifest, run:
+
+```sh
+python -m census.metadata_gate ./synthetic-census-manifest.json
+python -m unittest discover -s tests -p 'test_corpus_census_metadata_gate.py' -v
+```
+
+Input schema root: `{"schema_version":"0.1.0","records":[...]}`, capped at 100 metadata objects. Each object must declare an opaque artifact/revision/source-revision/source-locator reference, Work-only source mode, source kind, visibility, rights review status/reference, allowed purpose `["metadata_census"]`, `raw_export_status:"not_fetched"`, and retention policy. Optional 12-component house scores or H01–H12/S01–S12/N01–N12 node scores require an explicit taxonomy edition. False booleans-as-numbers, unknown fields (including body fields), duplicated JSON keys, non-finite scores, private/non-Work modes, more than 100 objects, and duplicate artifact+revision pairs fail closed.
+
+**The output is aggregate-only** (`REVIEWABLE_CANDIDATE` or `HOLD`, error codes and local row indices; no names, source locators, source contents or individual identifiers printed). Both outcomes force `can_ingest:false`, `rights_authenticated:false`, `canon:false`, `deployed:false`, `records_read_from_sources:0`, `records_indexed:0`. A self-declared `rights_reviewed` is never authentication; an external principal/rights verification is required **before even a metadata read from a private real source**. Do not run this tool against unapproved user records or publish private aggregate outputs.
+
+Independent local replay on Python 3.13.5: **16/16 unittest methods pass**, and **16/16 under python -O**, with syntax compilation. Exact Git blob SHA for `census/metadata_gate.py`: `bd406ee4b7ea03488a3e91387a0e167a70b39e25`; tests: `e091c1cc16323eb9a21f0d873a2d1efd40029c2e`. Those blobs were verified by GitHub readback. This is local test proof, **not GitHub Actions CI, host source/rights authorization, an authenticated corpus pilot, a deployed feature, or a 1,728-node mapped dataset**. Preserve this version and dissent; do not merge the draft without separate review of privacy, scope and security.
