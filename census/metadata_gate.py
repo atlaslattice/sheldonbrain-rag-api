@@ -110,12 +110,16 @@ def validate_manifest(raw: bytes) -> dict[str, Any]:
         edition = record.get("taxonomy_edition")
         houses = record.get("house_scores")
         nodes = record.get("node_scores")
-        if houses is not None or nodes is not None:
-            if not _opaque(edition):
-                flag("TAXONOMY_EDITION_MISSING", index)
-        if houses is not None and (not isinstance(houses, list) or len(houses) != 12 or not all(_score(s) for s in houses)):
+        # Even when scores are absent, a supplied edition must be an opaque
+        # reference, not an unchecked body-bearing object or arbitrary value.
+        if "taxonomy_edition" in record and not _opaque(edition):
+            flag("INVALID_TAXONOMY_EDITION", index)
+        # A present null vector is malformed, not equivalent to absent data.
+        if ("house_scores" in record or "node_scores" in record) and "taxonomy_edition" not in record:
+            flag("TAXONOMY_EDITION_MISSING", index)
+        if "house_scores" in record and (not isinstance(houses, list) or len(houses) != 12 or not all(_score(s) for s in houses)):
             flag("INVALID_HOUSE_VECTOR", index)
-        if nodes is not None and (
+        if "node_scores" in record and (
             not isinstance(nodes, dict) or len(nodes) > 1728 or
             any(not isinstance(k, str) or not COORD.fullmatch(k) or not _score(s) for k, s in nodes.items())
         ):
