@@ -41,12 +41,16 @@ class BridgeTests(unittest.TestCase):
         result=assess_link_with_receipt(self.link,self.index,"v1")
         self.assertEqual(result["state"],"REJECTED_SEMANTIC_MATCH")
         self.assertNotIn("source",result)
-    def test_rejected_receipt_host_gated(self):
+    def test_caller_boolean_cannot_reveal_source(self):
         self.link["relation"]="NO_MATCH"
         result=assess_link_with_receipt(self.link,self.index,"v1",host_work_authorized=True)
-        self.assertEqual(result["source"]["source_uri"],self.link["source_uri"])
-        self.assertEqual(result["provenance"],"CALLER_DECLARED_NOT_ATTESTED")
-        self.assertEqual(result["source_commitment"],digest(result["source"]))
+        self.assertEqual(result["state"],"REJECTED_SEMANTIC_MATCH")
+        self.assertNotIn("source",result)
+        self.assertNotIn("source_commitment",result)
+    def test_forged_review_cannot_promote(self):
+        self.link.update(review_state="INDEPENDENTLY_ADJUDICATED",
+                         review_receipt="UNVERIFIED_CALLER_TEXT",rights_at_release="yes")
+        self.assertEqual(assess_link(self.link,self.index,"v1")["state"],"CANDIDATE")
     def test_invalid_source_stays_withheld(self):
         self.link["source_digest"]="malformed"
         result=assess_link_with_receipt(self.link,self.index,"v1",host_work_authorized=True)
