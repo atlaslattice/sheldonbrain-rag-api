@@ -88,6 +88,27 @@ class MetadataGateTests(unittest.TestCase):
         self.row["taxonomy_edition"] = "edition:v1"
         self.assertEqual(self.verdict()["disposition"], "REVIEWABLE_CANDIDATE")
 
+    def test_optional_edition_never_accepts_embedded_body(self):
+        # Before hardening, all of these passed as REVIEWABLE_CANDIDATE
+        # if neither score field was present, including a dict carrying text.
+        for unsafe in ({"body": "PRIVATE_FIXTURE_DO_NOT_PRINT"}, ["private"],
+                       12, True, "", "a b", None):
+            with self.subTest(kind=type(unsafe).__name__):
+                self.row["taxonomy_edition"] = unsafe
+                result = self.held("INVALID_TAXONOMY_EDITION")
+                self.assertNotIn("PRIVATE_FIXTURE_DO_NOT_PRINT", json.dumps(result))
+        self.row["taxonomy_edition"] = "ariadne/v0.7"
+        self.assertEqual(self.verdict()["disposition"], "REVIEWABLE_CANDIDATE")
+
+    def test_explicit_null_score_vectors_are_not_accepted_as_absent(self):
+        self.row["taxonomy_edition"] = "ariadne/v0.7"
+        for field, code in (("house_scores", "INVALID_HOUSE_VECTOR"),
+                            ("node_scores", "INVALID_NODE_VECTOR")):
+            with self.subTest(field=field):
+                self.row[field] = None
+                self.held(code)
+                self.row.pop(field)
+
     def test_boolean_house_score_is_not_numeric_evidence(self):
         self.row.update({"taxonomy_edition": "edition:v1", "house_scores": [0.5] * 11 + [True]})
         self.held("INVALID_HOUSE_VECTOR")
