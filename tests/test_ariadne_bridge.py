@@ -30,6 +30,12 @@ class BridgeTests(unittest.TestCase):
         del self.link["source_version"];self.assertEqual(assess_link(self.link,self.index,"v1")["state"],"HOLD")
     def test_missing_review(self):
         self.link["review_state"]="INDEPENDENTLY_ADJUDICATED";self.assertEqual(assess_link(self.link,self.index,"v1")["state"],"HOLD")
+    def test_false_friend_no_match(self):
+        self.link["relation"]="NO_MATCH"
+        self.assertEqual(assess_link(self.link,self.index,"v1")["state"],"REJECTED_SEMANTIC_MATCH")
+    def test_malformed_source_digest(self):
+        self.link["source_digest"]="not-a-digest"
+        self.assertEqual(assess_link(self.link,self.index,"v1")["state"],"HOLD")
     def test_no_authority(self):
         self.link.update(review_state="INDEPENDENTLY_ADJUDICATED",review_receipt="r",rights_at_release="allowed")
         self.assertEqual(assess_link(self.link,self.index,"v1")["authority_effect"],"NONE")
