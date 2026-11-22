@@ -31,24 +31,49 @@ def verify_registry(registry,expected_digest,edition):
         kinds[row["node_kind"]]+=1
     if kinds!=Counter({"DOMAIN_SPECIALIZATION":1008,"META_METHOD_AUDIT":720}): raise ValueError("type counts")
     return {"state":"PINNED_REGISTRY_VALID","edition":edition,"digest":expected_digest}
+
+def _valid_source_version(value):
+    """Short printable metadata reference; never stringify caller objects."""
+    return (type(value) is str and 0 < len(value) <= 180
+            and value.isascii() and all(32 < ord(c) < 127 for c in value))
+
 def assess_link(link,index,edition):
-    if link.get("edition")!=edition or link.get("coordinate") not in index: return {"state":"HOLD","reason":"edition/coordinate"}
-    if link.get("relation") not in RELATIONS: return {"state":"HOLD","reason":"relation"}
-    if not str(link.get("source_uri","")).startswith(("https://openalex.org/","https://doi.org/")): return {"state":"HOLD","reason":"source URI"}
-    if not link.get("source_version") or not re.fullmatch(r"[a-f0-9]{64}",str(link.get("source_digest",""))): return {"state":"HOLD","reason":"source provenance"}
-    if link.get("relation")=="NO_MATCH": return {"state":"REJECTED_SEMANTIC_MATCH","authority_effect":"NONE"}
-    # Caller-supplied review labels and rights are untrusted: never promote.
+    """Public-only classification of an already-authorized candidate; no approval.
+
+    Caller data must never throw or be copied into a returned denial. An ACL for
+    a private index is NOT implemented here; it belongs before this function.
+    """
+    if type(link) is not dict or type(index) is not dict or type(edition) is not str or not edition:
+        return {"state":"HOLD","reason":"invalid classification inputs","authority_effect":"NONE"}
+    coordinate=link.get("coordinate")
+    if (type(coordinate) is not str or not COORD.fullmatch(coordinate)
+            or link.get("edition")!=edition or coordinate not in index):
+        return {"state":"HOLD","reason":"edition/coordinate","authority_effect":"NONE"}
+    relation=link.get("relation")
+    if type(relation) is not str or relation not in RELATIONS:
+        return {"state":"HOLD","reason":"relation","authority_effect":"NONE"}
+    uri=link.get("source_uri")
+    if (type(uri) is not str or len(uri)>500 or not uri.startswith(("https://openalex.org/","https://doi.org/"))
+            or any(ord(ch)<33 or ord(ch)>126 for ch in uri)):
+        return {"state":"HOLD","reason":"source URI","authority_effect":"NONE"}
+    source_digest=link.get("source_digest")
+    if (not _valid_source_version(link.get("source_version")) or
+            type(source_digest) is not str or not re.fullmatch(r"[a-f0-9]{64}",source_digest)):
+        return {"state":"HOLD","reason":"source provenance","authority_effect":"NONE"}
+    if relation=="NO_MATCH":
+        return {"state":"REJECTED_SEMANTIC_MATCH","authority_effect":"NONE"}
     return {"state":"CANDIDATE","authority_effect":"NONE",
             "review_attestation":"NOT_VERIFIED"}
 
 def assess_link_with_receipt(link,index,edition,host_work_authorized=False):
-    """Public/source-only API: no caller-controlled flag can disclose provenance.
+    """Reserved private Work resolver: constant denial WITHOUT source lookup.
 
-    The host must implement a separate server-side receipt ledger and verify
-    READ+RETURN grants at dereference time. This function issues no handles.
+    No host-issued principal/capability or origin ledger is wired. The legacy
+    caller boolean is ignored (backward-compatible argument only). Even a
+    public candidate's relation state must not leak through this private port.
+    Legitimate public classification uses assess_link with public inputs only.
     """
-    result=assess_link(link,index,edition)
-    return {"state":result["state"],"authority_effect":"NONE",
+    return {"state":"HOLD","authority_effect":"NONE",
             "provenance":"WITHHELD_UNVERIFIED_HOST"}
 
 def macroturn_plan():
