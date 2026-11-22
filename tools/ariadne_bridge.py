@@ -16,15 +16,31 @@ def load_strict(raw):
     def constant(value): raise ValueError("nonfinite: "+value)
     return json.loads(raw,object_pairs_hook=pairs,parse_constant=constant)
 def verify_registry(registry,expected_digest,edition):
-    if not re.fullmatch(r"[a-f0-9]{64}",expected_digest or "") or digest(registry)!=expected_digest:
+    # The exported validation boundary is strict even when called with
+    # Python objects rather than JSON-decoded source. No caller-provided
+    # container or scalar subtype may bypass the type gate.
+    if (type(registry) is not dict or type(expected_digest) is not str
+            or type(edition) is not str or not edition):
+        raise ValueError("INVALID_REGISTRY")
+    if not re.fullmatch(r"[a-f0-9]{64}", expected_digest):
         raise ValueError("unpinned or mismatched source")
-    if registry.get("edition")!=edition or not edition: raise ValueError("edition mismatch")
+    try:
+        match = digest(registry) == expected_digest
+    except (TypeError, ValueError, OverflowError, UnicodeError, RecursionError) as exc:
+        raise ValueError("INVALID_REGISTRY") from exc
+    if not match:
+        raise ValueError("unpinned or mismatched source")
+    if registry.get("edition") != edition:
+        raise ValueError("edition mismatch")
     rows=registry.get("records")
     if not isinstance(rows,list) or len(rows)!=1728: raise ValueError("expected 1728")
     seen=set(); kinds=Counter()
     for row in rows:
-        c=row.get("coordinate","")
-        if not COORD.fullmatch(c) or c in seen: raise ValueError("bad/duplicate coordinate")
+        if type(row) is not dict:
+            raise ValueError("INVALID_REGISTRY")
+        c = row.get("coordinate")
+        if type(c) is not str or not COORD.fullmatch(c) or c in seen:
+            raise ValueError("INVALID_REGISTRY")
         seen.add(c)
         for field in ("house_name","sphere_name","node_name","node_kind","source_node_sha256"):
             if not isinstance(row.get(field),str) or not row[field].strip(): raise ValueError("missing "+field)
