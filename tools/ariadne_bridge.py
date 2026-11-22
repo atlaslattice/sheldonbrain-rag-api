@@ -1,5 +1,6 @@
 """Read-only Ariadne/OpenAlex bridge; never grants authority."""
-import hashlib,json,re
+import hashlib,json,re,math
+from decimal import Decimal, InvalidOperation
 from urllib.parse import urlsplit
 from collections import Counter
 COORD=re.compile(r"^H(0[1-9]|1[0-2])\.S(0[1-9]|1[0-2])\.N(0[1-9]|1[0-2])$")
@@ -14,7 +15,21 @@ def load_strict(raw):
             result[key]=value
         return result
     def constant(value): raise ValueError("nonfinite: "+value)
-    return json.loads(raw,object_pairs_hook=pairs,parse_constant=constant)
+    def safe_float(literal):
+        # This is an input-integrity check, NOT scientific calibration.
+        # Require a decimal-text round trip; do not silently round tiny
+        # nonzero metadata to 0, a long mantissa to fewer digits, or infinity.
+        try:
+            exact=Decimal(literal)
+            approx=float(exact)
+        except (InvalidOperation, OverflowError, ValueError) as exc:
+            raise ValueError("UNREPRESENTABLE_JSON_FLOAT") from exc
+        if (not math.isfinite(approx) or (exact!=0 and approx==0)
+                or Decimal(str(approx))!=exact):
+            raise ValueError("LOSSY_OR_NONFINITE_JSON_FLOAT")
+        return approx
+    return json.loads(raw,object_pairs_hook=pairs,parse_constant=constant,
+                      parse_float=safe_float)
 def verify_registry(registry,expected_digest,edition):
     # The exported validation boundary is strict even when called with
     # Python objects rather than JSON-decoded source. No caller-provided
