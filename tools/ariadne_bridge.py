@@ -35,7 +35,8 @@ def assess_link(link,index,edition):
     if link.get("edition")!=edition or link.get("coordinate") not in index: return {"state":"HOLD","reason":"edition/coordinate"}
     if link.get("relation") not in RELATIONS: return {"state":"HOLD","reason":"relation"}
     if not str(link.get("source_uri","")).startswith(("https://openalex.org/","https://doi.org/")): return {"state":"HOLD","reason":"source URI"}
-    if not link.get("source_version") or not link.get("source_digest"): return {"state":"HOLD","reason":"source provenance"}
+    if not link.get("source_version") or not re.fullmatch(r"[a-f0-9]{64}",str(link.get("source_digest",""))): return {"state":"HOLD","reason":"source provenance"}
+    if link.get("relation")=="NO_MATCH": return {"state":"REJECTED_SEMANTIC_MATCH","authority_effect":"NONE"}
     if link.get("review_state")!="INDEPENDENTLY_ADJUDICATED": return {"state":"CANDIDATE","authority_effect":"NONE"}
     if not link.get("review_receipt") or not link.get("rights_at_release"): return {"state":"HOLD","reason":"review/rights"}
     return {"state":"REVIEWED_RELATION","authority_effect":"NONE","external_attestation":"NOT_PERFORMED"}
