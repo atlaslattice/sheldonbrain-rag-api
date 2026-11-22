@@ -1,5 +1,6 @@
 """Read-only Ariadne/OpenAlex bridge; never grants authority."""
 import hashlib,json,re
+from urllib.parse import urlsplit
 from collections import Counter
 COORD=re.compile(r"^H(0[1-9]|1[0-2])\.S(0[1-9]|1[0-2])\.N(0[1-9]|1[0-2])$")
 RELATIONS={"EXACT","RELATED","BROADER","NARROWER","CONTRADICTS","ANALOGY","METHOD_TRANSFER","CANDIDATE","NO_MATCH"}
@@ -33,9 +34,30 @@ def verify_registry(registry,expected_digest,edition):
     return {"state":"PINNED_REGISTRY_VALID","edition":edition,"digest":expected_digest}
 
 def _valid_source_version(value):
-    """Short printable metadata reference; never stringify caller objects."""
+    """Syntactic evidence label, NOT proof that this edition exists."""
     return (type(value) is str and 0 < len(value) <= 180
-            and value.isascii() and all(32 < ord(c) < 127 for c in value))
+            and value.isascii() and all(32 < ord(c) < 127 for c in value)
+            and any(c.isalnum() for c in value))
+
+def _source_uri_shape(value):
+    """Advisory shape ONLY. Never fetch, verify ownership or infer source rights."""
+    if (type(value) is not str or len(value) > 500 or not value.isascii()
+            or not all(33 <= ord(c) <= 126 for c in value)):
+        return False
+    try:
+        parsed = urlsplit(value)
+        if (parsed.scheme != 'https' or parsed.username is not None
+                or parsed.password is not None or parsed.query or parsed.fragment
+                or parsed.port not in (None, 443)):
+            return False
+        if parsed.hostname == 'openalex.org':
+            return re.fullmatch(r'/[WATISCPF]\d+', parsed.path.replace(' ', '')) is not None and ' ' not in parsed.path
+        if parsed.hostname == 'doi.org':
+            return (re.fullmatch(r'/10\.\d{4,9}/[^/\s?#]+(?:/[^\s?#]+)*', parsed.path) is not None
+                    and re.search(r'%0[ad]', parsed.path, re.IGNORECASE) is None)
+    except ValueError:
+        return False
+    return False
 
 def assess_link(link,index,edition):
     """Public-only classification of an already-authorized candidate; no approval.
@@ -53,8 +75,7 @@ def assess_link(link,index,edition):
     if type(relation) is not str or relation not in RELATIONS:
         return {"state":"HOLD","reason":"relation","authority_effect":"NONE"}
     uri=link.get("source_uri")
-    if (type(uri) is not str or len(uri)>500 or not uri.startswith(("https://openalex.org/","https://doi.org/"))
-            or any(ord(ch)<33 or ord(ch)>126 for ch in uri)):
+    if not _source_uri_shape(uri):
         return {"state":"HOLD","reason":"source URI","authority_effect":"NONE"}
     source_digest=link.get("source_digest")
     if (not _valid_source_version(link.get("source_version")) or
