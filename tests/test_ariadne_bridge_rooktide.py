@@ -55,6 +55,56 @@ class BridgeBoundaryTests(unittest.TestCase):
         for link in ([],{},None,'not-json'):
             with self.subTest(kind=type(link).__name__):
                 self.assertEqual(assess_link(link,self.index,'v1')['state'],'HOLD')
+    def test_uri_missing_identifier_rejected(self):
+        for uri in ('https://doi.org/', 'https://openalex.org/',
+                    'https://doi.org/10.0000/', 'https://openalex.org/W',
+                    'https://openalex.org/not-an-id'):
+            with self.subTest(uri=uri):
+                self.link['source_uri']=uri
+                self.assertEqual(assess_link(self.link,self.index,'v1')['state'],'HOLD')
+    def test_openalex_resource_uri_shapes(self):
+        for uri in ('https://openalex.org/W123', 'https://openalex.org/T10278',
+                    'https://openalex.org:443/W123'):
+            with self.subTest(uri=uri):
+                self.link['source_uri']=uri
+                self.assertEqual(assess_link(self.link,self.index,'v1')['state'],'CANDIDATE')
+    def test_doi_identifier_shape(self):
+        for uri in ('https://doi.org/10.1000/xyz123',
+                    'https://doi.org/10.1038/s41598-026-49889-y'):
+            with self.subTest(uri=uri):
+                self.link['source_uri']=uri
+                self.assertEqual(assess_link(self.link,self.index,'v1')['state'],'CANDIDATE')
+    def test_source_uri_authority_confusion_rejected(self):
+        for uri in ('https://openalex.org@evil.net/W123',
+                    'https://openalex.org:444/W123',
+                    'https://doi.org.evil.org/10.1000/x',
+                    'https://doi.org/10.1000/x?secret=1',
+                    'https://doi.org/10.1000/%0aCRLF',
+                    'https://openalex.org/W123#fragment',
+                    'https://doi.org/10.1000/'):
+            with self.subTest(uri=uri):
+                self.link['source_uri']=uri
+                self.assertEqual(assess_link(self.link,self.index,'v1')['state'],'HOLD')
+    def test_empty_source_version_token_rejected(self):
+        for token in ('!', '-', '...', ':', '/..'):
+            with self.subTest(token=token):
+                self.link['source_version']=token
+                self.assertEqual(assess_link(self.link,self.index,'v1')['state'],'HOLD')
+    def test_source_version_short_genuine_shape_kept(self):
+        for token in ('v1','1','2026-11-22','sha256:'+('a'*64)):
+            with self.subTest(token=token):
+                self.link['source_version']=token
+                self.assertEqual(assess_link(self.link,self.index,'v1')['state'],'CANDIDATE')
+    def test_public_classifier_does_not_prove_a_real_doi(self):
+        # Even a well-formed but nonexistent DOI remains advisory.
+        self.link['source_uri']='https://doi.org/10.99999/fictional-sample'
+        result=assess_link(self.link,self.index,'v1')
+        self.assertEqual(result['state'],'CANDIDATE')
+        self.assertEqual(result['review_attestation'],'NOT_VERIFIED')
+    def test_private_resolver_still_no_lookup_after_uri_shape_patch(self):
+        self.link['source_uri']='https://doi.org/'
+        self.assertEqual(assess_link_with_receipt(self.link,ExplodingDict(),'v1',True),{
+            'state':'HOLD','authority_effect':'NONE','provenance':'WITHHELD_UNVERIFIED_HOST'})
     def test_public_edition_mismatch(self):
         self.assertEqual(assess_link(self.link,self.index,'v2')['state'],'HOLD')
     def test_private_no_index_touch_default(self):
