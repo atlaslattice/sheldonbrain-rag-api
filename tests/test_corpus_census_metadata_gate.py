@@ -46,6 +46,13 @@ class MetadataGateTests(unittest.TestCase):
         for name in ("can_ingest", "rights_authenticated", "canon", "deployed"):
             self.assertIs(result[name], False)
 
+    def test_path_traversal_locator_is_held_without_leak(self):
+        for locator in ("../private", "synthetic:../secret", "/mnt/../protected", "safe/./alias"):
+            with self.subTest(locator=locator):
+                self.row["source_locator"] = locator
+                result = self.held("UNSAFE_SOURCE_LOCATOR")
+                self.assertNotIn(locator, json.dumps(result))
+
     def test_private_body_field_is_rejected_and_not_echoed(self):
         secret = "DO_NOT_PRINT_PRIVATE_SENTINEL"
         self.row["content"] = secret
