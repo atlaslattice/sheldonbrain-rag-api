@@ -45,7 +45,7 @@ def _opaque(value: Any) -> bool:
 
 def _safe_source_locator(value: Any) -> bool:
     """No source is fetched, but do not pass path-traversal segments onward."""
-    return _opaque(value) and all(part not in {".", ".."} for part in value.split("/"))
+    return _opaque(value) and all(part not in {".", ".."} for part in value.replace(":", "/").split("/"))
 
 
 def _score(value: Any) -> bool:
