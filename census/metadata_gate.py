@@ -96,7 +96,7 @@ def validate_manifest(raw: bytes) -> dict[str, Any]:
         # A syntactically opaque locator can still contain ../ path traversal.
         # Keep source content out of receipts, even when rejecting a locator.
         if _opaque(record.get("source_locator")) and not _safe_source_locator(record["source_locator"]):
-            flag("INVALID_OPAQUE_REFERENCE", index)
+            flag("UNSAFE_SOURCE_LOCATOR", index)
         pair = (record.get("artifact_id"), record.get("revision_id"))
         if all(isinstance(v, str) for v in pair):
             if pair in seen:
