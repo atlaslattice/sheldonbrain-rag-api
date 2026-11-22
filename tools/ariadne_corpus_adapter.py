@@ -3,7 +3,13 @@
 Legacy Sheldonbrain metadata remains untouched. This adapter never translates
 S001..S144 or E145 into a modern node without a reviewed crosswalk.
 """
+import re
 from tools.ariadne_bridge import verify_registry, assess_link, digest, COORD
+
+# Candidate identifiers are opaque provenance references, never arbitrary body objects.
+OPAQUE_REF = re.compile(r"^[A-Za-z0-9._:/@+#=%-]{1,180}$")
+def _opaque_ref(value):
+    return type(value) is str and OPAQUE_REF.fullmatch(value) is not None
 
 def build_index(registry, expected_digest, edition):
     receipt = verify_registry(registry, expected_digest, edition)
@@ -15,8 +21,8 @@ def classify_candidate(metadata, index, edition, registry_digest):
     source_id = metadata.get("source_id")
     revision = metadata.get("source_revision")
     rights = metadata.get("rights_status")
-    if not source_id or not revision:
-        return {"state":"HOLD","reason":"source identity/revision missing","authority_effect":"NONE"}
+    if not _opaque_ref(source_id) or not _opaque_ref(revision):
+        return {"state":"HOLD","reason":"source identity/revision invalid","authority_effect":"NONE"}
     if rights != "AUTHORIZED_FOR_INDEXING":
         return {"state":"HOLD","reason":"indexing rights not established","authority_effect":"NONE"}
     coordinate = metadata.get("ariadne_coordinate")
@@ -36,8 +42,14 @@ def classify_candidate(metadata, index, edition, registry_digest):
             "classification_review":"NOT_ADJUDICATED"}
 
 def link_external(candidate, link, index, edition):
-    if candidate.get("state")!="CANDIDATE":
+    if not isinstance(candidate,dict) or not isinstance(link,dict) or candidate.get("state")!="CANDIDATE":
         return {"state":"HOLD","reason":"unqualified corpus candidate","authority_effect":"NONE"}
-    if candidate["coordinate"] != link.get("coordinate"):
+    if (candidate.get("ariadne_edition") != edition
+        or not re.fullmatch(r"[a-f0-9]{64}",str(candidate.get("ariadne_registry_digest","")))
+        or not _opaque_ref(candidate.get("source_id"))
+        or not _opaque_ref(candidate.get("source_revision"))
+        or candidate.get("classification_review") != "NOT_ADJUDICATED"):
+        return {"state":"HOLD","reason":"candidate provenance/edition invalid","authority_effect":"NONE"}
+    if candidate.get("coordinate") != link.get("coordinate"):
         return {"state":"HOLD","reason":"coordinate disagreement","authority_effect":"NONE"}
     return assess_link(link,index,edition)
