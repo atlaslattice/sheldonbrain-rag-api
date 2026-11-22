@@ -122,6 +122,26 @@ class MetadataGateTests(unittest.TestCase):
         self.assertEqual(validate_manifest(b"\xff")["disposition"], "HOLD")
         self.assertEqual(validate_manifest(b'[]')["disposition"], "HOLD")
 
+    def test_unhashable_enum_fields_hold_instead_of_crashing(self):
+        self.row["source_kind"] = []
+        self.row["visibility"] = {"nested": "value"}
+        self.held("INVALID_SOURCE_KIND")
+        self.held("VISIBILITY_HOLD")
+
+    def test_huge_integer_score_holds_without_float_overflow(self):
+        self.row["taxonomy_edition"] = "edition:v1"
+        self.row["house_scores"] = [0.5] * 11 + [10 ** 500]
+        self.held("INVALID_HOUSE_VECTOR")
+
+    def test_oversized_manifest_is_held_before_parsing(self):
+        result = validate_manifest(b"x" * 1_048_577)
+        self.assertEqual(result["disposition"], "HOLD")
+        self.assertEqual(result["errors"][0]["code"], "MANIFEST_BYTES_EXCEEDED")
+
+    def test_nested_duplicate_json_key_is_held(self):
+        raw = b'{"schema_version":"0.1.0","records":[{"source_mode":"work","source_mode":"play"}]}'
+        self.assertEqual(validate_manifest(raw)["disposition"], "HOLD")
+
     def test_cli_local_only_aggregate_and_exit_code(self):
         with tempfile.TemporaryDirectory() as d:
             p = Path(d) / "fixture.json"
