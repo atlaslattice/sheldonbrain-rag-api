@@ -43,12 +43,12 @@ class BridgeTests(unittest.TestCase):
     def test_rejected_receipt_withheld_by_default(self):
         self.link["relation"]="NO_MATCH"
         result=assess_link_with_receipt(self.link,self.index,"v1")
-        self.assertEqual(result["state"],"REJECTED_SEMANTIC_MATCH")
+        self.assertEqual(result["state"],"HOLD")
         self.assertNotIn("source",result)
     def test_caller_boolean_cannot_reveal_source(self):
         self.link["relation"]="NO_MATCH"
         result=assess_link_with_receipt(self.link,self.index,"v1",host_work_authorized=True)
-        self.assertEqual(result["state"],"REJECTED_SEMANTIC_MATCH")
+        self.assertEqual(result["state"],"HOLD")
         self.assertNotIn("source",result)
         self.assertNotIn("source_commitment",result)
     def test_forged_review_cannot_promote(self):
