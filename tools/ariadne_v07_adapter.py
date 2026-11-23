@@ -45,13 +45,47 @@ def adapt_original(original_bytes,expected_sha,edition='Ariadne v0.7'):
        'original_kind_translation':{'EPISTEMIC_META':'META_METHOD_AUDIT'},
        'registry':normalized,'authority_effect':'NONE','source_status':'PINNED_NOT_SEMANTICALLY_ADJUDICATED'}
 def classify_frozen_topic(topic,prepared):
-    """Public frozen topic metadata only; does not generate scientific equivalence."""
-    if type(topic) is not dict or type(prepared) is not dict:return {'state':'HOLD','authority_effect':'NONE'}
-    coord=topic.get('top1_coordinate');tid=topic.get('topic_id');reg=prepared.get('registry',{})
-    if type(tid) is not str or not re.fullmatch(r'T[0-9]+',tid) or type(coord) is not str:return {'state':'HOLD','authority_effect':'NONE'}
-    nodes={x['coordinate']:x for x in reg.get('records',[])}
-    if coord not in nodes or topic.get('top1_node_title')!=nodes[coord]['node_name'] or topic.get('source_url')!=f'https://openalex.org/topics/{tid}':return {'state':'HOLD','authority_effect':'NONE'}
+    """Public frozen-topic candidate only; never source/issuer attestation.
+
+    Caller-created dictionaries are NOT a trust root. Shapes below fail closed
+    rather than throwing; trusted host source and rights validation remain
+    outside this standalone classifier.
+    """
+    hold={'state':'HOLD','authority_effect':'NONE'}
+    if type(topic) is not dict or type(prepared) is not dict:
+        return dict(hold)
+    coord=topic.get('top1_coordinate');tid=topic.get('topic_id')
+    if (type(tid) is not str or not re.fullmatch(r'T[0-9]+',tid)
+            or type(coord) is not str or not re.fullmatch(r'^H(0[1-9]|1[0-2])\\.S(0[1-9]|1[0-2])\\.N(0[1-9]|1[0-2])$',coord)):
+        return dict(hold)
+    reg=prepared.get('registry')
+    if type(reg) is not dict or reg.get('edition')!='Ariadne v0.7':
+        return dict(hold)
+    if prepared.get('original_sha256')!=V07_SOURCE_SHA256:
+        return dict(hold)
+    rows=reg.get('records')
+    if type(rows) is not list or not 0 < len(rows) <= 1728:
+        return dict(hold)
+    nodes={}
+    for row in rows:
+        if type(row) is not dict:
+            return dict(hold)
+        coordinate=row.get('coordinate')
+        node_name=row.get('node_name')
+        node_sha=row.get('source_node_sha256')
+        if (type(coordinate) is not str or not re.fullmatch(r'^H(0[1-9]|1[0-2])\\.S(0[1-9]|1[0-2])\\.N(0[1-9]|1[0-2])$',coordinate)
+                or coordinate in nodes or type(node_name) is not str
+                or not node_name.strip() or type(node_sha) is not str
+                or not SHA.fullmatch(node_sha)):
+            return dict(hold)
+        nodes[coordinate]=row
+    node=nodes.get(coord)
+    if (node is None or type(topic.get('top1_node_title')) is not str
+            or topic['top1_node_title']!=node['node_name']
+            or topic.get('source_url')!=f'https://openalex.org/topics/{tid}'):
+        return dict(hold)
     return {'state':'CANDIDATE_CLASSIFICATION','topic_id':tid,'coordinate':coord,
        'hsn_edition':reg['edition'],'hsn_original_sha256':prepared['original_sha256'],
-       'source_node_sha256':nodes[coord]['source_node_sha256'],
-       'authority_effect':'NONE','semantic_adjudication':'NOT_PERFORMED'}
+       'source_node_sha256':node['source_node_sha256'],
+       'authority_effect':'NONE','semantic_adjudication':'NOT_PERFORMED',
+       'publisher_attested':False}
