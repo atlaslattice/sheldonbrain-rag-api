@@ -1,18 +1,41 @@
 """Ariadne v0.7 original-byte adapter for Sheldonbrain (read-only)."""
-import hashlib,json,re
+import hashlib,json,re,math,unicodedata
+from decimal import Decimal, InvalidOperation
 from collections import Counter
 SHA=re.compile(r'^[a-f0-9]{64}$')
 V07_SOURCE_SHA256='07533cf7a6b6f567259962bf73efee9b22b47cbacb429499787800e07864e5a6'
 def digest(data):
     return hashlib.sha256(json.dumps(data,sort_keys=True,ensure_ascii=False,separators=(',',':'),allow_nan=False).encode()).hexdigest()
 def strict_json(raw):
+    """Lossless source-ingress policy matching the PR #8 public bridge.
+
+    Caller JSON cannot silently introduce a nonfinite/lossy decimal number
+    or Unicode-equivalent duplicate key. This is syntactic integrity only;
+    source ownership and host permissions are separate gates.
+    """
     def pairs(items):
-        out={}
-        for k,v in items:
-            if k in out:raise ValueError('duplicate JSON key')
-            out[k]=v
+        out={}; normalized=set()
+        for key,value in items:
+            nkey=unicodedata.normalize('NFC',key)
+            if key in out or nkey in normalized:
+                raise ValueError('duplicate or NFC-colliding JSON key')
+            out[key]=value
+            normalized.add(nkey)
         return out
-    return json.loads(raw,object_pairs_hook=pairs,parse_constant=lambda x:(_ for _ in ()).throw(ValueError('nonfinite')))
+    def constant(value):
+        raise ValueError('nonfinite JSON literal: '+value)
+    def safe_float(literal):
+        try:
+            exact=Decimal(literal)
+            approx=float(exact)
+        except (InvalidOperation, OverflowError, ValueError) as exc:
+            raise ValueError('UNREPRESENTABLE_JSON_FLOAT') from exc
+        if (not math.isfinite(approx) or (exact!=0 and approx==0)
+                or Decimal(str(approx))!=exact):
+            raise ValueError('LOSSY_OR_NONFINITE_JSON_FLOAT')
+        return approx
+    return json.loads(raw,object_pairs_hook=pairs,parse_constant=constant,
+                      parse_float=safe_float)
 def adapt_original(original_bytes,expected_sha,edition='Ariadne v0.7'):
     if type(original_bytes) is not bytes or type(expected_sha) is not str or not SHA.fullmatch(expected_sha):raise ValueError('missing original source pin')
     if edition!='Ariadne v0.7' or expected_sha!=V07_SOURCE_SHA256:raise ValueError('wrong Ariadne edition/source pin')
