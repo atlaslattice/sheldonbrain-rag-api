@@ -1,5 +1,5 @@
 """Read-only Ariadne/OpenAlex bridge; never grants authority."""
-import hashlib,json,re,math
+import hashlib,json,re,math,unicodedata
 from decimal import Decimal, InvalidOperation
 from urllib.parse import urlsplit
 from collections import Counter
@@ -9,10 +9,15 @@ def digest(obj):
     return hashlib.sha256(json.dumps(obj,sort_keys=True,ensure_ascii=False,separators=(",",":"),allow_nan=False).encode()).hexdigest()
 def load_strict(raw):
     def pairs(items):
-        result={}
+        result={}; normalized=set()
         for key,value in items:
-            if key in result: raise ValueError("duplicate key: "+key)
+            # Preserve raw key spelling but reject aliases that would collapse
+            # in downstream NFC-normalizing source and graph indices.
+            nkey=unicodedata.normalize("NFC", key)
+            if key in result or nkey in normalized:
+                raise ValueError("duplicate or NFC-colliding JSON key")
             result[key]=value
+            normalized.add(nkey)
         return result
     def constant(value): raise ValueError("nonfinite: "+value)
     def safe_float(literal):
