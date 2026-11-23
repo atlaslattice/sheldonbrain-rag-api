@@ -1,18 +1,41 @@
 """Ariadne v0.7 original-byte adapter for Sheldonbrain (read-only)."""
-import hashlib,json,re
+import hashlib,json,re,math,unicodedata
+from decimal import Decimal, InvalidOperation
 from collections import Counter
 SHA=re.compile(r'^[a-f0-9]{64}$')
 V07_SOURCE_SHA256='07533cf7a6b6f567259962bf73efee9b22b47cbacb429499787800e07864e5a6'
 def digest(data):
     return hashlib.sha256(json.dumps(data,sort_keys=True,ensure_ascii=False,separators=(',',':'),allow_nan=False).encode()).hexdigest()
 def strict_json(raw):
+    """Lossless source-ingress policy matching the PR #8 public bridge.
+
+    Caller JSON cannot silently introduce a nonfinite/lossy decimal number
+    or Unicode-equivalent duplicate key. This is syntactic integrity only;
+    source ownership and host permissions are separate gates.
+    """
     def pairs(items):
-        out={}
-        for k,v in items:
-            if k in out:raise ValueError('duplicate JSON key')
-            out[k]=v
+        out={}; normalized=set()
+        for key,value in items:
+            nkey=unicodedata.normalize('NFC',key)
+            if key in out or nkey in normalized:
+                raise ValueError('duplicate or NFC-colliding JSON key')
+            out[key]=value
+            normalized.add(nkey)
         return out
-    return json.loads(raw,object_pairs_hook=pairs,parse_constant=lambda x:(_ for _ in ()).throw(ValueError('nonfinite')))
+    def constant(value):
+        raise ValueError('nonfinite JSON literal: '+value)
+    def safe_float(literal):
+        try:
+            exact=Decimal(literal)
+            approx=float(exact)
+        except (InvalidOperation, OverflowError, ValueError) as exc:
+            raise ValueError('UNREPRESENTABLE_JSON_FLOAT') from exc
+        if (not math.isfinite(approx) or (exact!=0 and approx==0)
+                or Decimal(str(approx))!=exact):
+            raise ValueError('LOSSY_OR_NONFINITE_JSON_FLOAT')
+        return approx
+    return json.loads(raw,object_pairs_hook=pairs,parse_constant=constant,
+                      parse_float=safe_float)
 def adapt_original(original_bytes,expected_sha,edition='Ariadne v0.7'):
     if type(original_bytes) is not bytes or type(expected_sha) is not str or not SHA.fullmatch(expected_sha):raise ValueError('missing original source pin')
     if edition!='Ariadne v0.7' or expected_sha!=V07_SOURCE_SHA256:raise ValueError('wrong Ariadne edition/source pin')
@@ -45,13 +68,47 @@ def adapt_original(original_bytes,expected_sha,edition='Ariadne v0.7'):
        'original_kind_translation':{'EPISTEMIC_META':'META_METHOD_AUDIT'},
        'registry':normalized,'authority_effect':'NONE','source_status':'PINNED_NOT_SEMANTICALLY_ADJUDICATED'}
 def classify_frozen_topic(topic,prepared):
-    """Public frozen topic metadata only; does not generate scientific equivalence."""
-    if type(topic) is not dict or type(prepared) is not dict:return {'state':'HOLD','authority_effect':'NONE'}
-    coord=topic.get('top1_coordinate');tid=topic.get('topic_id');reg=prepared.get('registry',{})
-    if type(tid) is not str or not re.fullmatch(r'T[0-9]+',tid) or type(coord) is not str:return {'state':'HOLD','authority_effect':'NONE'}
-    nodes={x['coordinate']:x for x in reg.get('records',[])}
-    if coord not in nodes or topic.get('top1_node_title')!=nodes[coord]['node_name'] or topic.get('source_url')!=f'https://openalex.org/topics/{tid}':return {'state':'HOLD','authority_effect':'NONE'}
+    """Public frozen-topic candidate only; never source/issuer attestation.
+
+    Caller-created dictionaries are NOT a trust root. Shapes below fail closed
+    rather than throwing; trusted host source and rights validation remain
+    outside this standalone classifier.
+    """
+    hold={'state':'HOLD','authority_effect':'NONE'}
+    if type(topic) is not dict or type(prepared) is not dict:
+        return dict(hold)
+    coord=topic.get('top1_coordinate');tid=topic.get('topic_id')
+    if (type(tid) is not str or not re.fullmatch(r'T[0-9]+',tid)
+            or type(coord) is not str or not re.fullmatch(r'^H(0[1-9]|1[0-2])\.S(0[1-9]|1[0-2])\.N(0[1-9]|1[0-2])$',coord)):
+        return dict(hold)
+    reg=prepared.get('registry')
+    if type(reg) is not dict or reg.get('edition')!='Ariadne v0.7':
+        return dict(hold)
+    if prepared.get('original_sha256')!=V07_SOURCE_SHA256:
+        return dict(hold)
+    rows=reg.get('records')
+    if type(rows) is not list or not 0 < len(rows) <= 1728:
+        return dict(hold)
+    nodes={}
+    for row in rows:
+        if type(row) is not dict:
+            return dict(hold)
+        coordinate=row.get('coordinate')
+        node_name=row.get('node_name')
+        node_sha=row.get('source_node_sha256')
+        if (type(coordinate) is not str or not re.fullmatch(r'^H(0[1-9]|1[0-2])\.S(0[1-9]|1[0-2])\.N(0[1-9]|1[0-2])$',coordinate)
+                or coordinate in nodes or type(node_name) is not str
+                or not node_name.strip() or type(node_sha) is not str
+                or not SHA.fullmatch(node_sha)):
+            return dict(hold)
+        nodes[coordinate]=row
+    node=nodes.get(coord)
+    if (node is None or type(topic.get('top1_node_title')) is not str
+            or topic['top1_node_title']!=node['node_name']
+            or topic.get('source_url')!=f'https://openalex.org/topics/{tid}'):
+        return dict(hold)
     return {'state':'CANDIDATE_CLASSIFICATION','topic_id':tid,'coordinate':coord,
        'hsn_edition':reg['edition'],'hsn_original_sha256':prepared['original_sha256'],
-       'source_node_sha256':nodes[coord]['source_node_sha256'],
-       'authority_effect':'NONE','semantic_adjudication':'NOT_PERFORMED'}
+       'source_node_sha256':node['source_node_sha256'],
+       'authority_effect':'NONE','semantic_adjudication':'NOT_PERFORMED',
+       'publisher_attested':False}
