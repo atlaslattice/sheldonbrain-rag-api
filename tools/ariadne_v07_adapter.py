@@ -56,7 +56,7 @@ def classify_frozen_topic(topic,prepared):
         return dict(hold)
     coord=topic.get('top1_coordinate');tid=topic.get('topic_id')
     if (type(tid) is not str or not re.fullmatch(r'T[0-9]+',tid)
-            or type(coord) is not str or not re.fullmatch(r'^H(0[1-9]|1[0-2])\\.S(0[1-9]|1[0-2])\\.N(0[1-9]|1[0-2])$',coord)):
+            or type(coord) is not str or not re.fullmatch(r'^H(0[1-9]|1[0-2])\.S(0[1-9]|1[0-2])\.N(0[1-9]|1[0-2])$',coord)):
         return dict(hold)
     reg=prepared.get('registry')
     if type(reg) is not dict or reg.get('edition')!='Ariadne v0.7':
@@ -73,7 +73,7 @@ def classify_frozen_topic(topic,prepared):
         coordinate=row.get('coordinate')
         node_name=row.get('node_name')
         node_sha=row.get('source_node_sha256')
-        if (type(coordinate) is not str or not re.fullmatch(r'^H(0[1-9]|1[0-2])\\.S(0[1-9]|1[0-2])\\.N(0[1-9]|1[0-2])$',coordinate)
+        if (type(coordinate) is not str or not re.fullmatch(r'^H(0[1-9]|1[0-2])\.S(0[1-9]|1[0-2])\.N(0[1-9]|1[0-2])$',coordinate)
                 or coordinate in nodes or type(node_name) is not str
                 or not node_name.strip() or type(node_sha) is not str
                 or not SHA.fullmatch(node_sha)):
