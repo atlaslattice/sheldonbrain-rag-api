@@ -45,7 +45,7 @@ def adapt_original(original_bytes,expected_sha,edition='Ariadne v0.7'):
        'original_kind_translation':{'EPISTEMIC_META':'META_METHOD_AUDIT'},
        'registry':normalized,'authority_effect':'NONE','source_status':'PINNED_NOT_SEMANTICALLY_ADJUDICATED'}
 def classify_frozen_topic(topic,prepared):
-    """Frozen topic metadata only; does not generate scientific equivalence."""
+    """Public frozen topic metadata only; does not generate scientific equivalence."""
     if type(topic) is not dict or type(prepared) is not dict:return {'state':'HOLD','authority_effect':'NONE'}
     coord=topic.get('top1_coordinate');tid=topic.get('topic_id');reg=prepared.get('registry',{})
     if type(tid) is not str or not re.fullmatch(r'T[0-9]+',tid) or type(coord) is not str:return {'state':'HOLD','authority_effect':'NONE'}
